@@ -6,7 +6,7 @@
 Welcome to seirmo's documentation!
 ===================================
 
-This is a project to model the outbreak of an infectious disease with the SEIR model.
+This is a project that creates a solver of ODE systems.
 
 * :ref:`genindex`
 * :ref:`search`
@@ -14,7 +14,7 @@ This is a project to model the outbreak of an infectious disease with the SEIR m
 Contents
 ========
 
-.. module:: seirmo
+.. module:: solver
 
 .. toctree::
 

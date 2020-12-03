@@ -122,21 +122,21 @@ def doctest_rst_and_public_interface():
 
     # Import all seirmo modules. If a new module is added to seirmo
     # it should be imported here for this doctest.
-    import seirmo
+    import solver
 
     # If any modules other than these are exposed it may indicate that a module
     # has been inadvertently exposed in a public context, or that a new module
     # has been added to pints and should be imported above and included in this
     # list.
-    seirmo_submodules = [
-        'seirmo.simulation',
-        'seirmo.models',
-        'seirmo.version_info'
+    solver_submodules = [
+        'solver.simulation',
+        'solver.models',
+        'solver.version_info'
     ]
 
     doc_symbols = get_all_documented_symbols()
 
-    check_exposed_symbols(seirmo, seirmo_submodules, doc_symbols)
+    check_exposed_symbols(solver, solver_submodules, doc_symbols)
 
     print('All classes and methods are documented in an RST file, and all '
           'public interfaces are clean.')

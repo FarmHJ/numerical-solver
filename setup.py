@@ -32,12 +32,12 @@ def get_readme():
 
 setup(
     # Module name (lowercase)
-    name='seirmo',
+    name='solver',
 
     # Version
     version=get_version(),
 
-    description='This is a one-week project in which we are using SEIR model to model the outbreak of an infectious disease.',  # noqa
+    description='This is a project that creates a solver of ODE systems.',  # noqa
 
     long_description=get_readme(),
 
@@ -51,16 +51,15 @@ setup(
 
     maintainer_email='',
 
-    url='https://github.com/SABS-R3-Epidemiology/seirmo.git',
+    url='https://github.com/FarmHJ/numerical-solver.git',
 
     # Packages to include
-    packages=find_packages(include=('seirmo', 'seirmo.*')),
+    packages=find_packages(include=('solver', 'solver.*')),
 
     # List of dependencies
     install_requires=[
         # Dependencies go here!
-        'numpy>=1.8',
-        'scipy'
+        'numpy>=1.8'
     ],
     extras_require={
         'docs': [
