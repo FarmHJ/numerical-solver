@@ -18,9 +18,9 @@ sys.path.insert(0, os.path.abspath('../..'))
 
 # -- Project information -----------------------------------------------------
 
-project = 'seirmo'  # noqa
-copyright = '2020, SABS-R3-Epidemiology'
-author = 'SABS-R3-Epidemiology'
+project = 'solver'  # noqa
+copyright = '2020, FarmHJ'
+author = 'FarmHJ'
 
 # The full version, including alpha/beta/rc tags
 release = '0.0.1'
