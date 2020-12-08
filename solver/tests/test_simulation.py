@@ -7,7 +7,7 @@
 import numpy as np
 
 import unittest
-import seirmo as se
+import solver
 
 
 class TestSimulationController(unittest.TestCase):
@@ -19,8 +19,8 @@ class TestSimulationController(unittest.TestCase):
         start = 0
         end = 10
         with self.assertRaises(TypeError):
-            se.SimulationController(se.SimulationController, start, end)
-            se.SimulationController('1', start, end)
+            solver.SimulationController(solver.SimulationController, start, end)
+            solver.SimulationController('1', start, end)
 
     def test_run(self):
 
@@ -28,8 +28,8 @@ class TestSimulationController(unittest.TestCase):
 
         start = 0
         end = 10
-        model = se.SEIRModel
-        simulation = se.SimulationController(model, start, end)
+        model = solver.SEIRModel
+        simulation = solver.SimulationController(model, start, end)
 
         initial_values = [0.9, 0, 0.1, 0]
         constants = [1, 1, 1]

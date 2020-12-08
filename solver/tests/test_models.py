@@ -8,7 +8,7 @@ import unittest
 
 import numpy as np
 
-import seirmo as se
+import solver
 
 
 class TestForwardModel(unittest.TestCase):
@@ -16,10 +16,10 @@ class TestForwardModel(unittest.TestCase):
     Test the 'ForwardModel' class.
     """
     def test__init__(self):
-        se.ForwardModel()
+        solver.ForwardModel()
 
     def test_simulate(self):
-        forward_model = se.ForwardModel()
+        forward_model = solver.ForwardModel()
         with self.assertRaises(NotImplementedError):
             forward_model.simulate(0, 1)
 
@@ -29,10 +29,10 @@ class TestSEIRModel(unittest.TestCase):
     Test the 'ForwardModel' class.
     """
     def test__init__(self):
-        se.SEIRModel()
+        solver.SEIRModel()
 
     def test_simulate(self):
-        model = se.SEIRModel()
+        model = solver.SEIRModel()
         n_outputs = 4
 
         initial_values = [0.9, 0, 0.1, 0]
@@ -54,7 +54,7 @@ class TestSEIRModel(unittest.TestCase):
         np.testing.assert_almost_equal(total, expected)
 
     def test_simulate_return_incidence_true(self):
-        model = se.SEIRModel()
+        model = solver.SEIRModel()
 
         initial_values = [0.9, 0, 0.1, 0]
         constants = [1, 1, 1]

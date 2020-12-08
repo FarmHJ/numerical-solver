@@ -269,9 +269,9 @@ def get_all_documented_symbols():
 if __name__ == '__main__':
     # Set up argument parsing
     parser = argparse.ArgumentParser(
-        description='Run unit tests for seirmo.',
+        description='Run unit tests for solver.',
         epilog='To run individual unit tests, use e.g.'
-               ' $ seirmo/tests/dummy_test.py',
+               ' $ solver/tests/dummy_test.py',
     )
     # Unit tests
     parser.add_argument(
