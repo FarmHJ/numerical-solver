@@ -4,9 +4,6 @@
 # for copyright notice and full license details.
 #
 
-import numpy as np
-from scipy.integrate import solve_ivp
-
 
 class ForwardModel(object):
     """ForwardModel Class:

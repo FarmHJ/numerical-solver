@@ -6,8 +6,8 @@ from setuptools import setup, find_packages
 
 def get_version():
     """
-    Get version number from the seirmo module.
-    The easiest way would be to just ``import seirmo ``, but note that this may  # noqa
+    Get version number from the solver module.
+    The easiest way would be to just ``import solver ``, but note that this may  # noqa
     fail if the dependencies have not been installed yet. Instead, we've put
     the version number in a simple version_info module, that we'll import here
     by temporarily adding the oxrse directory to the pythonpath using sys.path.
@@ -15,7 +15,7 @@ def get_version():
     import os
     import sys
 
-    sys.path.append(os.path.abspath('seirmo'))
+    sys.path.append(os.path.abspath('solver'))
     from version_info import VERSION as version
     sys.path.pop()
 

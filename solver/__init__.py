@@ -5,8 +5,7 @@
 #
 
 from .models import (
-    ForwardModel,
-    SEIRModel
+    ForwardModel
 )
 
 from .simulation import (

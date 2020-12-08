@@ -2,7 +2,7 @@
 exclude=
   .git,
   setup.py,
-  seirmo/__init__.py,
+  solver/__init__.py,
   env,
   venv,
   build
