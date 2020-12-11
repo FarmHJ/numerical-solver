@@ -4,8 +4,6 @@
 # for copyright notice and full license details.
 #
 
-import numpy as np
-
 import unittest
 import solver
 

@@ -1,8 +1,8 @@
 [run]
-source = seirmo
+source = solver
 omit = 
-    seirmo/tests/*
-    seirmo/version_info.py
+    solver/tests/*
+    solver/version_info.py
 
 [report]
 exclude_lines =

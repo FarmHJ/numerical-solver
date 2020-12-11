@@ -4,8 +4,6 @@
 # for copyright notice and full license details.
 #
 
-import numpy as np
-
 import unittest
 import solver
 
@@ -21,6 +19,7 @@ class TestForwardModel(unittest.TestCase):
         forward_model = solver.ForwardModel()
         with self.assertRaises(NotImplementedError):
             forward_model.simulate(0, 1)
+
 
 if __name__ == '__main__':
     unittest.main()
