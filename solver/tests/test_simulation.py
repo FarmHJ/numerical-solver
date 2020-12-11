@@ -19,7 +19,7 @@ class TestSimulationController(unittest.TestCase):
         start = 0
         end = 10
         with self.assertRaises(TypeError):
-            solver.SimulationController(solver.SimulationController, start, end)
+            solver.SimulationController(solver.SimulationController, start, end) # noqa
             solver.SimulationController('1', start, end)
 
     def test_run(self):
