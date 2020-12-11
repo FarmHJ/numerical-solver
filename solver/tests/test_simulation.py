@@ -22,29 +22,6 @@ class TestSimulationController(unittest.TestCase):
             solver.SimulationController(solver.SimulationController, start, end) # noqa
             solver.SimulationController('1', start, end)
 
-    def test_run(self):
-
-        n_outputs = 4
-
-        start = 0
-        end = 10
-        model = solver.SEIRModel
-        simulation = solver.SimulationController(model, start, end)
-
-        initial_values = [0.9, 0, 0.1, 0]
-        constants = [1, 1, 1]
-        test_parameters = initial_values + constants
-        output = simulation.run(test_parameters, return_incidence=True)
-
-        # Check output shape
-        self.assertEqual(output.shape, (50, n_outputs + 1))
-
-        # Check that sum of states is one at all times
-        output = simulation.run(test_parameters)
-        total = np.sum(output, axis=1)
-        expected = np.ones(shape=50)
-        np.testing.assert_almost_equal(total, expected)
-
 
 if __name__ == '__main__':
     unittest.main()
