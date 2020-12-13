@@ -8,7 +8,7 @@ class TestSolverMethod(unittest.TestCase):
     """
     def test__init__(self):
 
-        func = lambda x,y: -y
+        func = lambda x, y: -y
         x_min = 0
         x_max = 10
         initial_value = 1
