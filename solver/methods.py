@@ -1,6 +1,8 @@
-import numpy as np
-
-import solver
+#
+# This file is part of seirmo (https://github.com/SABS-R3-Epidemiology/seirmo/)
+# which is released under the BSD 3-clause license. See accompanying LICENSE.md
+# for copyright notice and full license details.
+#
 
 
 class SolverMethod(object):
@@ -27,11 +29,11 @@ class SolverMethod(object):
     def Euler_explicit(self):
 
         y_n = [self.initial_value]
+        x_n = [self.x_min]
 
-        mesh = np.linspace(self.x_min, self.x_max, num=self.mesh_points) # noqa
         mesh_size = (self.x_max - self.x_min) / self.mesh_points
-        for n in range(self.mesh_points):
-            x_n = self.x_min + n * mesh_size
-            y_n.append(y_n[-1] + mesh_size * func(x_n, y_n[-1]))
+        for n in range(1, self.mesh_points + 1):
+            x_n.append(self.x_min + n * mesh_size)
+            y_n.append(y_n[-1] + mesh_size * self.func(x_n, y_n[-1]))
 
-        return y_n
+        return x_n, y_n
