@@ -44,12 +44,13 @@ def run_copyright_checks():
     header_check = True
     checked_file_types = ['.py']
     copyright_header = """#
-# This file is part of seirmo (https://github.com/SABS-R3-Epidemiology/seirmo/)
-# which is released under the BSD 3-clause license. See accompanying LICENSE.md
-# for copyright notice and full license details.
+# This file is part of numerical-solver
+# (https://github.com/FarmHJ/numerical-solver/) which is released under the BSD
+# 3-clause license. See accompanying LICENSE.md for copyright notice and full
+# license details.
 #"""
 
-    for dirname, _, file_list in os.walk('seirmo'):
+    for dirname, _, file_list in os.walk('solver'):
         for f_name in file_list:
             if any([f_name.endswith(x) for x in checked_file_types]):
                 path = os.path.join(dirname, f_name)
@@ -129,8 +130,9 @@ def doctest_rst_and_public_interface():
     # has been added to pints and should be imported above and included in this
     # list.
     solver_submodules = [
-        'solver.simulation',
+        'solver.methods',
         'solver.models',
+        'solver.simulation',
         'solver.version_info'
     ]
 

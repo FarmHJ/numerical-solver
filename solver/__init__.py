@@ -4,6 +4,10 @@
 # for copyright notice and full license details.
 #
 
+from .methods import (
+    SolverMethods
+)
+
 from .models import (
     ForwardModel
 )
