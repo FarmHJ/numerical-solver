@@ -1,7 +1,8 @@
 #
-# This file is part of numerical-solver (https://github.com/FarmHJ/numerical-solver/)
-# which is released under the BSD 3-clause license. See accompanying LICENSE.md
-# for copyright notice and full license details.
+# This file is part of numerical-solver
+# (https://github.com/FarmHJ/numerical-solver/) which is released under the BSD
+# 3-clause license. See accompanying LICENSE.md for copyright notice and full
+# license details.
 #
 
 
@@ -40,7 +41,7 @@ class SolverMethod(object):
         return x_n, y_n
 
     def fixed_pt_iteration(self, init_pred, x):
-        
+
         y_0 = init_pred
         y_1 = init_pred + self.mesh_size * self.func(x, y_0)
         iteration_counts = 0
@@ -54,7 +55,6 @@ class SolverMethod(object):
             return y_1
         else:
             raise RuntimeError('Fixed point iteration does not converge')
-
 
     def Euler_implicit(self):
 

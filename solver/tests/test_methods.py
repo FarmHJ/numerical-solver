@@ -1,7 +1,8 @@
 #
-# This file is part of numerical-solver (https://github.com/FarmHJ/numerical-solver/)
-# which is released under the BSD 3-clause license. See accompanying LICENSE.md
-# for copyright notice and full license details.
+# This file is part of numerical-solver
+# (https://github.com/FarmHJ/numerical-solver/) which is released under the BSD
+# 3-clause license. See accompanying LICENSE.md for copyright notice and full
+# license details.
 #
 
 import unittest
@@ -45,7 +46,7 @@ class TestSolverMethod(unittest.TestCase):
         self.assertEqual(np.shape(soln), (11,))
         self.assertEqual(soln[1], 0.9)
         self.assertEqual(soln[2], 0.81)
-    
+
     def test_fixed_pt_iteration(self):
 
         func = lambda x, y: -y

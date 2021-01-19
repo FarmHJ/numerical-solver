@@ -44,9 +44,10 @@ def run_copyright_checks():
     header_check = True
     checked_file_types = ['.py']
     copyright_header = """#
-# This file is part of numerical-solver (https://github.com/FarmHJ/numerical-solver/)
-# which is released under the BSD 3-clause license. See accompanying LICENSE.md
-# for copyright notice and full license details.
+# This file is part of numerical-solver
+# (https://github.com/FarmHJ/numerical-solver/) which is released under the BSD
+# 3-clause license. See accompanying LICENSE.md for copyright notice and full
+# license details.
 #"""
 
     for dirname, _, file_list in os.walk('solver'):
