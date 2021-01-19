@@ -60,6 +60,16 @@ class TestSolverMethod(unittest.TestCase):
 
         self.assertEqual(y_pred, 0.909)
 
+        func = lambda x, y: -10 * y
+        initial_value = 1.1
+        mesh_points = 10
+
+        problem = solver.SolverMethod(
+            func, x_min, x_max, initial_value, mesh_points)
+
+        with self.assertRaises(RuntimeError):
+            problem.fixed_pt_iteration(initial_value, 0.1)
+
     def test_Euler_implicit(self):
 
         func = lambda x, y: -y

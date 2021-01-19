@@ -50,7 +50,11 @@ class SolverMethod(object):
             y_1 = init_pred + self.mesh_size * self.func(x, y_0)
             iteration_counts += 1
 
-        return y_1
+        if abs(y_1 - y_0) < 0.01:
+            return y_1
+        else:
+            raise RuntimeError('Fixed point iteration does not converge')
+
 
     def Euler_implicit(self):
 
