@@ -20,7 +20,7 @@ class SolverMethods(object):
     x_max
         Final value of mesh
     initial_value
-        Value of solution at starting point of mesh. 
+        Value of solution at starting point of mesh.
     mesh_points
         Total number of mesh points within the range
         ``x_min`` to ``x_max``.
@@ -48,7 +48,7 @@ class SolverMethods(object):
 
         .. math:
             y_{n+1} = y_n + hf(x_n, y_n)
-        
+
         where :math:`h` is the mesh size and function :math:
         `f` is the ODE.
         """
@@ -102,7 +102,7 @@ class SolverMethods(object):
 
         .. math:
             y_{n+1} = y_n + hf(x_{n+1}, y_{n+1})
-        
+
         where :math:`h` is the mesh size and function :math:
         `f` is the ODE.
         """
