@@ -18,7 +18,8 @@ class TestSolverMethods(unittest.TestCase):
     """
     def test__init__(self):
 
-        func = lambda x, y: -y
+        def func(x, y):
+            return -y
         x_min = 0
         x_max = 1
         initial_value = 1
@@ -30,9 +31,14 @@ class TestSolverMethods(unittest.TestCase):
         self.assertEqual(problem.x_min, 0)
         self.assertEqual(problem.mesh_points, 10)
 
+        with self.assertRaises(TypeError):
+            solver.SolverMethods(
+                x_min, x_min, x_max, initial_value, mesh_points)
+
     def test_Euler_explicit(self):
 
-        func = lambda x, y: -y
+        def func(x, y):
+            return -y
         x_min = 0
         x_max = 1
         initial_value = 1
@@ -49,7 +55,8 @@ class TestSolverMethods(unittest.TestCase):
 
     def test_fixed_pt_iteration(self):
 
-        func = lambda x, y: -y
+        def func(x, y):
+            return -y
         x_min = 0
         x_max = 1
         initial_value = 1
@@ -61,7 +68,8 @@ class TestSolverMethods(unittest.TestCase):
 
         self.assertEqual(y_pred, 0.909)
 
-        func = lambda x, y: -10 * y
+        def func(x, y):
+            return -10 * y
         initial_value = 1.1
         mesh_points = 10
 
@@ -73,7 +81,8 @@ class TestSolverMethods(unittest.TestCase):
 
     def test_Euler_implicit(self):
 
-        func = lambda x, y: -y
+        def func(x, y):
+            return -y
         x_min = 0
         x_max = 1
         initial_value = 1
