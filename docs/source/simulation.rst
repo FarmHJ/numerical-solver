@@ -2,9 +2,9 @@
 Simulations
 ***********
 
-.. currentmodule:: seirmo
+.. currentmodule:: solver
 
-The models provide a framework for the implementation of any models.
+The simulations runs simulation of any models.
 
 Overview:
 

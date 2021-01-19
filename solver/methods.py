@@ -6,8 +6,8 @@
 #
 
 
-class SolverMethod(object):
-    """SolverMethod Class:
+class SolverMethods(object):
+    """SolverMethods Class:
 
     Apply numerical methods to solve given initial value problem
 
@@ -19,7 +19,7 @@ class SolverMethod(object):
     """
 
     def __init__(self, func, x_min, x_max, initial_value, mesh_points): # noqa
-        super(SolverMethod, self).__init__()
+        super(SolverMethods, self).__init__()
 
         self.func = func
         self.x_min = float(x_min)

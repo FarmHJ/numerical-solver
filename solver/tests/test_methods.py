@@ -12,7 +12,7 @@ import numpy as np
 import solver
 
 
-class TestSolverMethod(unittest.TestCase):
+class TestSolverMethods(unittest.TestCase):
     """
     Test the 'SolverMethod' class.
     """
@@ -24,7 +24,7 @@ class TestSolverMethod(unittest.TestCase):
         initial_value = 1
         mesh_points = 10
 
-        problem = solver.SolverMethod(
+        problem = solver.SolverMethods(
             func, x_min, x_max, initial_value, mesh_points)
 
         self.assertEqual(problem.x_min, 0)
@@ -38,7 +38,7 @@ class TestSolverMethod(unittest.TestCase):
         initial_value = 1
         mesh_points = 10
 
-        problem = solver.SolverMethod(
+        problem = solver.SolverMethods(
             func, x_min, x_max, initial_value, mesh_points)
         mesh, soln = problem.Euler_explicit()
 
@@ -55,7 +55,7 @@ class TestSolverMethod(unittest.TestCase):
         initial_value = 1
         mesh_points = 10
 
-        problem = solver.SolverMethod(
+        problem = solver.SolverMethods(
             func, x_min, x_max, initial_value, mesh_points)
         y_pred = problem.fixed_pt_iteration(initial_value, 0.1)
 
@@ -65,7 +65,7 @@ class TestSolverMethod(unittest.TestCase):
         initial_value = 1.1
         mesh_points = 10
 
-        problem = solver.SolverMethod(
+        problem = solver.SolverMethods(
             func, x_min, x_max, initial_value, mesh_points)
 
         with self.assertRaises(RuntimeError):
@@ -79,7 +79,7 @@ class TestSolverMethod(unittest.TestCase):
         initial_value = 1
         mesh_points = 10
 
-        problem = solver.SolverMethod(
+        problem = solver.SolverMethods(
             func, x_min, x_max, initial_value, mesh_points)
         mesh, soln = problem.Euler_implicit()
 

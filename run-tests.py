@@ -130,8 +130,9 @@ def doctest_rst_and_public_interface():
     # has been added to pints and should be imported above and included in this
     # list.
     solver_submodules = [
-        'solver.simulation',
+        'solver.methods',
         'solver.models',
+        'solver.simulation',
         'solver.version_info'
     ]
 

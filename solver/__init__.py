@@ -5,7 +5,7 @@
 #
 
 from .methods import (
-    SolverMethod
+    SolverMethods
 )
 
 from .models import (

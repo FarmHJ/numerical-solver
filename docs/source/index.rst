@@ -18,5 +18,6 @@ Contents
 
 .. toctree::
 
+    methods
     models
     simulation
