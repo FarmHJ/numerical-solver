@@ -42,7 +42,7 @@ class SolverMethods(object):
         self.mesh_size = (self.x_max - self.x_min) / self.mesh_points
 
     def Euler_explicit(self):
-        r"""
+        """
         Runs the Euler's explicit numerical method to approximate
         the solution to the initial value problem.
 
