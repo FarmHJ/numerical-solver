@@ -5,7 +5,7 @@
 #
 
 from .methods import (
-    SolverMethods
+    OneStepMethods
 )
 
 from .models import (

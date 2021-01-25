@@ -6,8 +6,8 @@
 #
 
 
-class SolverMethods(object):
-    """SolverMethods Class:
+class OneStepMethods(object):
+    """OneStepMethods Class:
 
     One-step numerical methods to solve given initial value problem
 
@@ -27,7 +27,7 @@ class SolverMethods(object):
     """
 
     def __init__(self, func, x_min, x_max, initial_value, mesh_points): # noqa
-        super(SolverMethods, self).__init__()
+        super(OneStepMethods, self).__init__()
 
         if not callable(func):
             raise TypeError('Input func is not a callable function')
