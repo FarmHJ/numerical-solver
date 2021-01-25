@@ -8,7 +8,7 @@ The numerical methods to approximate the solution of ODEs.
 
 Overview:
 
-- :class:`SolverMethods`
+- :class:`OneStepMethods`
 
 
-.. autoclass:: SolverMethods
+.. autoclass:: OneStepMethods
