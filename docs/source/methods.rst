@@ -12,3 +12,4 @@ Overview:
 
 
 .. autoclass:: SolverMethods
+    :members:
