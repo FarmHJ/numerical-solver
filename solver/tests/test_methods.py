@@ -12,9 +12,9 @@ import numpy as np
 import solver
 
 
-class TestSolverMethods(unittest.TestCase):
+class TestOneStepMethods(unittest.TestCase):
     """
-    Test the 'SolverMethod' class.
+    Test the 'OneStepMethod' class.
     """
     def test__init__(self):
 
@@ -25,14 +25,14 @@ class TestSolverMethods(unittest.TestCase):
         initial_value = 1
         mesh_points = 10
 
-        problem = solver.SolverMethods(
+        problem = solver.OneStepMethods(
             func, x_min, x_max, initial_value, mesh_points)
 
         self.assertEqual(problem.x_min, 0)
         self.assertEqual(problem.mesh_points, 10)
 
         with self.assertRaises(TypeError):
-            solver.SolverMethods(
+            solver.OneStepMethods(
                 x_min, x_min, x_max, initial_value, mesh_points)
 
     def test_Euler_explicit(self):
@@ -44,7 +44,7 @@ class TestSolverMethods(unittest.TestCase):
         initial_value = 1
         mesh_points = 10
 
-        problem = solver.SolverMethods(
+        problem = solver.OneStepMethods(
             func, x_min, x_max, initial_value, mesh_points)
         mesh, soln = problem.Euler_explicit()
 
@@ -62,7 +62,7 @@ class TestSolverMethods(unittest.TestCase):
         initial_value = 1
         mesh_points = 10
 
-        problem = solver.SolverMethods(
+        problem = solver.OneStepMethods(
             func, x_min, x_max, initial_value, mesh_points)
         y_pred = problem.fixed_pt_iteration(initial_value, 0.1)
 
@@ -73,7 +73,7 @@ class TestSolverMethods(unittest.TestCase):
         initial_value = 1.1
         mesh_points = 10
 
-        problem = solver.SolverMethods(
+        problem = solver.OneStepMethods(
             func, x_min, x_max, initial_value, mesh_points)
 
         with self.assertRaises(RuntimeError):
@@ -88,7 +88,7 @@ class TestSolverMethods(unittest.TestCase):
         initial_value = 1
         mesh_points = 10
 
-        problem = solver.SolverMethods(
+        problem = solver.OneStepMethods(
             func, x_min, x_max, initial_value, mesh_points)
         mesh, soln = problem.Euler_implicit()
 
@@ -96,6 +96,21 @@ class TestSolverMethods(unittest.TestCase):
         self.assertEqual(np.shape(soln), (11,))
         self.assertEqual(soln[1], 0.909)
         self.assertAlmostEqual(soln[2], 0.82719)
+
+    def test_RungeKutta4(self):
+
+        def func(x, y):
+            return y
+        x_min = 0
+        x_max = 1
+        initial_value = 1
+        mesh_points = 10
+
+        problem = solver.OneStepMethods(
+            func, x_min, x_max, initial_value, mesh_points)
+        mesh, soln = problem.RungeKutta4()
+
+        self.assertAlmostEqual(soln[1], 1.10517083)
 
 
 if __name__ == '__main__':

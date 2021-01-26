@@ -6,8 +6,8 @@
 #
 
 
-class SolverMethods(object):
-    """SolverMethods Class:
+class OneStepMethods(object):
+    """OneStepMethods Class:
 
     One-step numerical methods to solve given initial value problem
 
@@ -27,7 +27,7 @@ class SolverMethods(object):
     """
 
     def __init__(self, func, x_min, x_max, initial_value, mesh_points): # noqa
-        super(SolverMethods, self).__init__()
+        super(OneStepMethods, self).__init__()
 
         if not callable(func):
             raise TypeError('Input func is not a callable function')
@@ -113,5 +113,50 @@ class SolverMethods(object):
             x_n.append(self.x_min + n * self.mesh_size)
             est_y = self.fixed_pt_iteration(y_n[-1], x_n[-1])
             y_n.append(est_y)
+
+        return x_n, y_n
+
+    def RungeKutta4(self):
+        r"""
+        Runs the 4-stage Runge-Kutta numerical method to approximate
+        the solution to the initial value problem.
+
+        .. math::
+            y_{n+1} = y_n + \frac{1}{6}h(k_1 + 2k_2 + 2k_3 + k4)
+
+        where
+
+        .. math::
+            k_1 = f(x_n, y_n),
+
+        .. math::
+            k_2 = f(x_n + \frac{1}{2}h, y_n + \frac{1}{2}hk_1),
+
+        .. math::
+            k_3 = f(x_n + \frac{1}{2}h, y_n + \frac{1}{2}hk_2),
+
+        .. math::
+            k_4 = f(x_n + h, y_n + hk_3),
+
+        and :math:`h` is the mesh size and function :math:`f` is the ODE.
+        """
+
+        y_n = [self.initial_value]
+        x_n = [self.x_min]
+
+        # Calculate approximated solution for each mesh point
+        for n in range(1, self.mesh_points + 1):
+            x_n.append(self.x_min + n * self.mesh_size)
+            k1 = self.func(x_n[-1], y_n[-1])
+            k2 = self.func(
+                x_n[-1] + self.mesh_size / 2,
+                y_n[-1] + self.mesh_size / 2 * k1)
+            k3 = self.func(
+                x_n[-1] + self.mesh_size / 2,
+                y_n[-1] + self.mesh_size / 2 * k2)
+            k4 = self.func(
+                x_n[-1] + self.mesh_size, y_n[-1] + self.mesh_size * k3)
+            funcs_value = k1 + 2 * k2 + 2 * k3 + k4
+            y_n.append(y_n[-1] + self.mesh_size / 6 * funcs_value)
 
         return x_n, y_n
