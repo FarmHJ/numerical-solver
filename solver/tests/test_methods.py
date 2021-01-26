@@ -113,5 +113,61 @@ class TestOneStepMethods(unittest.TestCase):
         self.assertAlmostEqual(soln[1], 1.10517083)
 
 
+class TestPredictorCorrector(unittest.TestCase):
+    """
+    Test the 'PredictorCorrector' class.
+    """
+    def test__init__(self):
+
+        def func(x, y):
+            return -y
+        x_min = 0
+        x_max = 1
+        initial_value = 1
+        mesh_points = 10
+
+        problem = solver.PredictorCorrector(
+            func, x_min, x_max, initial_value, mesh_points)
+
+        self.assertEqual(problem.x_min, 0)
+        self.assertEqual(problem.mesh_points, 10)
+
+        with self.assertRaises(TypeError):
+            solver.PredictorCorrector(
+                x_min, x_min, x_max, initial_value, mesh_points)
+
+    def test_corrector_trapezium(self):
+
+        def func(x, y):
+            return x + y
+        x_min = 0
+        x_max = 1
+        initial_value = 1
+        mesh_points = 20
+
+        problem = solver.PredictorCorrector(
+            func, x_min, x_max, initial_value, mesh_points)
+
+        soln = problem.corrector_trapezium(0, [3], 3.15)
+
+        self.assertEqual(soln, [3, 3.155])
+
+    def test_Euler_trapezium(self):
+
+        def func(x, y):
+            return y
+        x_min = 0
+        x_max = 1
+        initial_value = 1
+        mesh_points = 10
+
+        problem = solver.PredictorCorrector(
+            func, x_min, x_max, initial_value, mesh_points)
+
+        soln = problem.Euler_trapezium()
+
+        self.assertEqual(soln[1], 1.105)
+
+
 if __name__ == '__main__':
     unittest.main()

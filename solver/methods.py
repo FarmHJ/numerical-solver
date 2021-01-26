@@ -57,8 +57,8 @@ class OneStepMethods(object):
 
         # Calculate approximated solution for each mesh point
         for n in range(1, self.mesh_points + 1):
-            x_n.append(self.x_min + n * self.mesh_size)
             y_n.append(y_n[-1] + self.mesh_size * self.func(x_n[-1], y_n[-1]))
+            x_n.append(self.x_min + n * self.mesh_size)
 
         return x_n, y_n
 
@@ -110,9 +110,9 @@ class OneStepMethods(object):
 
         # Calculate approximated solution for each mesh point
         for n in range(1, self.mesh_points + 1):
-            x_n.append(self.x_min + n * self.mesh_size)
             est_y = self.fixed_pt_iteration(y_n[-1], x_n[-1])
             y_n.append(est_y)
+            x_n.append(self.x_min + n * self.mesh_size)
 
         return x_n, y_n
 
@@ -146,7 +146,6 @@ class OneStepMethods(object):
 
         # Calculate approximated solution for each mesh point
         for n in range(1, self.mesh_points + 1):
-            x_n.append(self.x_min + n * self.mesh_size)
             k1 = self.func(x_n[-1], y_n[-1])
             k2 = self.func(
                 x_n[-1] + self.mesh_size / 2,
@@ -158,5 +157,70 @@ class OneStepMethods(object):
                 x_n[-1] + self.mesh_size, y_n[-1] + self.mesh_size * k3)
             funcs_value = k1 + 2 * k2 + 2 * k3 + k4
             y_n.append(y_n[-1] + self.mesh_size / 6 * funcs_value)
+            x_n.append(self.x_min + n * self.mesh_size)
 
         return x_n, y_n
+
+
+class PredictorCorrector(object):
+    """PredictorCorrector Class:
+
+    Predictor corrector method to solve given initial value problem
+    when using implicit linear multistep method as solution cannot be
+    solved numerically.
+
+    Parameters
+    ----------
+    func: callable function
+        ODE function to be solved numerically
+    x_min
+        Starting value of mesh
+    x_max
+        Final value of mesh
+    initial_value
+        Value of solution at starting point of mesh.
+    mesh_points
+        Total number of mesh points within the range
+        ``x_min`` to ``x_max``.
+    """
+
+    def __init__(self, func, x_min, x_max, initial_value, mesh_points): # noqa
+        super(PredictorCorrector, self).__init__()
+
+        if not callable(func):
+            raise TypeError('Input func is not a callable function')
+
+        self.func = func
+        self.x_min = float(x_min)
+        self.x_max = float(x_max)
+        self.initial_value = float(initial_value)
+        self.mesh_points = int(mesh_points)
+
+        # Calculate the size of mesh
+        self.mesh_size = (self.x_max - self.x_min) / self.mesh_points
+
+    def corrector_trapezium(self, x_point, y_n, prediction):
+
+        y_n.append(y_n[-1] + self.mesh_size / 2 * (
+            self.func(x_point, y_n[-1]) +
+            self.func(x_point + self.mesh_size, prediction)))
+
+        return y_n
+
+    def Euler_trapezium(self):
+
+        y_n = [self.initial_value]
+        x_n = [self.x_min]
+
+        for n in range(1, self.mesh_points + 1):
+
+            predictor = OneStepMethods(
+                self.func, self.x_min + (n - 1) * self.mesh_size,
+                self.x_min + n * self.mesh_size,
+                y_n[-1], 1)
+            _, prediction = predictor.Euler_explicit()
+
+            y_n = self.corrector_trapezium(x_n[-1], y_n, prediction[-1])
+            x_n.append(self.x_min + n * self.mesh_size)
+
+        return y_n
