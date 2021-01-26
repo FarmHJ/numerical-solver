@@ -123,13 +123,17 @@ class OneStepMethods(object):
 
         .. math::
             y_{n+1} = y_n + \frac{1}{6}h(k_1 + 2k_2 + 2k_3 + k4)
+
         where
         .. math::
             k_1 = f(x_n, y_n),
+
         .. math::
             k_2 = f(x_n + \frac{1}{2}h, y_n + \frac{1}{2}hk_1),
+
         .. math::
             k_3 = f(x_n + \frac{1}{2}h, y_n + \frac{1}{2}hk_2),
+
         .. math::
             k_4 = f(x_n + h, y_n + hk_3),
 
