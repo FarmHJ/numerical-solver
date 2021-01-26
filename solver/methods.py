@@ -49,8 +49,7 @@ class OneStepMethods(object):
         .. math::
             y_{n+1} = y_n + hf(x_n, y_n)
 
-        where :math:`h` is the mesh size and function :math:
-        `f` is the ODE.
+        where :math:`h` is the mesh size and function :math:`f` is the ODE.
         """
 
         y_n = [self.initial_value]
@@ -103,8 +102,7 @@ class OneStepMethods(object):
         .. math::
             y_{n+1} = y_n + hf(x_{n+1}, y_{n+1})
 
-        where :math:`h` is the mesh size and function :math:
-        `f` is the ODE.
+        where :math:`h` is the mesh size and function :math:`f` is the ODE.
         """
 
         y_n = [self.initial_value]
