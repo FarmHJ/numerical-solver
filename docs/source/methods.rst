@@ -12,3 +12,4 @@ Overview:
 
 
 .. autoclass:: OneStepMethods
+    :members:
