@@ -62,39 +62,38 @@ class OneStepMethods(object):
 
         return x_n, y_n
 
-    def fixed_pt_iteration(self, init_pred, x):
+    def fixed_pt_iteration(self, prediction, numerical_method):
         r"""
-        To approximate the solution :math:`y_{n+1}`for Euler's implicit method
-        at mesh point :math:`x_{n+1}`
+        To approximate the solution :math:`y_{n+1}`for any implicit numerical
+        method at mesh point :math:`x_{n+1}`
 
         Parameters
         ----------
-        init_pred
+        prediction
             Predicted value for fixed point iteration algorithm.
-            Conventionally taken as approximated solution as mesh
+            Conventionally taken as approximated solution at mesh
             point :math:`n`, :math:`y_n`
-        x
-            The mesh point :math:`x_{n+1}` where :math:`y_{n+1}`
-            is approximated under the Euler's implicit method.
+        numerical_method
+            The numerical method or equation where the solution
+            cannot be obtained explicitly.
         """
 
-        y_0 = init_pred
-        y_1 = init_pred + self.mesh_size * self.func(x, y_0)
+        next_prediction = numerical_method(prediction)
         iteration_counts = 0
 
         # Approximate solution with fixed point iteration
-        while abs(y_1 - y_0) >= 0.01 and iteration_counts <= 100:
-            y_0 = y_1
-            y_1 = init_pred + self.mesh_size * self.func(x, y_0)
+        while abs(prediction - next_prediction) >= 0.001 and iteration_counts <= 1000: # noqa
+            prediction = next_prediction
+            next_prediction = numerical_method(prediction)
             iteration_counts += 1
 
         # Raise error if algorithm doesn't converge
-        if abs(y_1 - y_0) < 0.01:
-            return y_1
+        if abs(prediction - next_prediction) < 0.01:
+            return next_prediction
         else:
             raise RuntimeError('Fixed point iteration does not converge')
 
-    def Euler_implicit(self):
+    def Euler_implicit(self, prediction=None):
         r"""
         Runs the Euler's implicit numerical method to approximate
         the solution to the initial value problem.
@@ -109,8 +108,16 @@ class OneStepMethods(object):
         x_n = [self.x_min]
 
         # Calculate approximated solution for each mesh point
+        if prediction is None:
+            prediction = y_n[-1]
+
         for n in range(1, self.mesh_points + 1):
-            est_y = self.fixed_pt_iteration(y_n[-1], x_n[-1])
+
+            def num_method(prediction):
+                return y_n[-1] + self.mesh_size * (
+                    self.func(x_n[-1] + self.mesh_size, prediction))
+
+            est_y = self.fixed_pt_iteration(prediction, num_method)
             y_n.append(est_y)
             x_n.append(self.x_min + n * self.mesh_size)
 
@@ -166,27 +173,20 @@ class OneStepMethods(object):
         y_n = [self.initial_value]
         x_n = [self.x_min]
 
-        if prediction is not None:
-            for n in range(1, self.mesh_points + 1):
-                y_n.append(y_n[-1] + self.mesh_size / 2 * (
-                    self.func(x_n[-1], y_n[-1]) + self.func(
-                        x_n[-1] + self.mesh_size, prediction)))
-                x_n.append(self.x_min + n * self.mesh_size)
-
         # Calculate approximated solution for each mesh point
         if prediction is None:
             prediction = y_n[-1]
 
-            for n in range(1, self.mesh_points + 1):
+        for n in range(1, self.mesh_points + 1):
 
-                def num_method(prediction):
-                    return y_n[-1] + self.mesh_size / 2 * (
-                        self.func(x_n[-1], y_n[-1]) + self.func(
-                            x_n[-1] + self.mesh_size, prediction))
+            def num_method(prediction):
+                return y_n[-1] + self.mesh_size / 2 * (
+                    self.func(x_n[-1], y_n[-1]) + self.func(
+                        x_n[-1] + self.mesh_size, prediction))
 
-                est_y = self.fixed_pt_iteration(prediction, num_method)
-                y_n.append(est_y)
-                x_n.append(self.x_min + n * self.mesh_size)
+            est_y = self.fixed_pt_iteration(prediction, num_method)
+            y_n.append(est_y)
+            x_n.append(self.x_min + n * self.mesh_size)
 
         return x_n, y_n
 
@@ -230,17 +230,20 @@ class PredictorCorrector(object):
 
     def corrector_trapezium(self, x_point, y_n, prediction):
 
+        # next_prediction = y_n[-1] + self.mesh_size / 2 * (
+        #     self.func(x_point, y_n[-1]) +
+        #     self.func(x_point + self.mesh_size, prediction))
+        # iteration_counts = 0
+
+        # while abs(prediction - next_prediction) > 0.001 and iteration_counts <= 1000: # noqa
+        #     prediction = next_prediction
+        #     next_prediction = y_n[-1] + self.mesh_size / 2 * (
+        #         self.func(x_point, y_n[-1]) +
+        #         self.func(x_point + self.mesh_size, prediction))
+        #     iteration_counts += 1
         next_prediction = y_n[-1] + self.mesh_size / 2 * (
             self.func(x_point, y_n[-1]) +
             self.func(x_point + self.mesh_size, prediction))
-        iteration_counts = 0
-
-        while abs(prediction - next_prediction) > 0.001 and iteration_counts <= 1000: # noqa
-            prediction = next_prediction
-            next_prediction = y_n[-1] + self.mesh_size / 2 * (
-                self.func(x_point, y_n[-1]) +
-                self.func(x_point + self.mesh_size, prediction))
-            iteration_counts += 1
 
         return next_prediction
 
@@ -256,6 +259,7 @@ class PredictorCorrector(object):
                 self.x_min + n * self.mesh_size,
                 y_n[-1], 1)
             _, prediction = predictor.Euler_explicit()
+            print(prediction[-1])
 
             y_n.append(self.corrector_trapezium(x_n[-1], y_n, prediction[-1]))
             x_n.append(self.x_min + n * self.mesh_size)
@@ -275,27 +279,17 @@ class PredictorCorrector(object):
                 y_n[-1], 1)
             _, prediction = predictor.Euler_explicit()
 
-            corrector = OneStepMethods(
-                self.func, x_n[-1],
-                x_n[-1] + self.mesh_size,
-                y_n[-1], 1)
-            _, next_correction = corrector.trapezium_rule(
-                prediction=prediction[-1])
-
-            next_correction = next_correction[-1]
+            next_correction = self.corrector_trapezium(
+                x_n[-1], y_n, prediction[-1])
             correction = prediction[-1]
             iteration_counts = 0
 
             while abs(correction - next_correction) > 0.001 and iteration_counts <= 1000: # noqa
                 correction = next_correction
-                corrector = OneStepMethods(
-                    self.func, x_n[-1],
-                    x_n[-1] + self.mesh_size,
-                    y_n[-1], 1)
-                _, next_correction = corrector.trapezium_rule(
-                    prediction=correction)
-                next_correction = next_correction[-1]
+                next_correction = self.corrector_trapezium(
+                    x_n[-1], y_n, correction)
                 iteration_counts += 1
+                print(iteration_counts, abs(correction - next_correction))
 
             y_n.append(next_correction)
             x_n.append(self.x_min + n * self.mesh_size)
