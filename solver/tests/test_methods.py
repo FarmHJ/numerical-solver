@@ -142,7 +142,7 @@ class TestPredictorCorrector(unittest.TestCase):
             return x + y
         x_min = 0
         x_max = 1
-        initial_value = 1
+        initial_value = 3
         mesh_points = 20
 
         problem = solver.PredictorCorrector(
@@ -150,7 +150,7 @@ class TestPredictorCorrector(unittest.TestCase):
 
         soln = problem.corrector_trapezium(0, [3], 3.15)
 
-        self.assertEqual(soln, [3, 3.155])
+        self.assertEqual(soln, 3.155125)
 
     def test_Euler_trapezium(self):
 
@@ -164,9 +164,9 @@ class TestPredictorCorrector(unittest.TestCase):
         problem = solver.PredictorCorrector(
             func, x_min, x_max, initial_value, mesh_points)
 
-        soln = problem.Euler_trapezium()
+        _, soln = problem.Euler_trapezium()
 
-        self.assertEqual(soln[1], 1.105)
+        self.assertEqual(soln[1], 1.10525)
 
 
 if __name__ == '__main__':

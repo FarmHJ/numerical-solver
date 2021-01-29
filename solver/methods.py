@@ -161,6 +161,26 @@ class OneStepMethods(object):
 
         return x_n, y_n
 
+    def trapezium_rule(self, prediction=None):
+
+        y_n = [self.initial_value]
+        x_n = [self.x_min]
+
+        if prediction is not None:
+            for n in range(1, self.mesh_points + 1):
+                y_n.append(y_n[-1] + self.mesh_size / 2 * (
+                    self.func(x_n[-1], y_n[-1]) + self.func(x_n[-1] + self.mesh_size, prediction)))
+                x_n.append(self.x_min + n * self.mesh_size)
+
+        # Calculate approximated solution for each mesh point
+        # if prediction is None:
+            # for n in range(1, self.mesh_points + 1):
+            #     est_y = self.fixed_pt_iteration(y_n[-1], x_n[-1])
+            #     y_n.append(est_y)
+            #     x_n.append(self.x_min + n * self.mesh_size)
+
+        return x_n, y_n
+
 
 class PredictorCorrector(object):
     """PredictorCorrector Class:
@@ -201,11 +221,19 @@ class PredictorCorrector(object):
 
     def corrector_trapezium(self, x_point, y_n, prediction):
 
-        y_n.append(y_n[-1] + self.mesh_size / 2 * (
+        next_prediction = y_n[-1] + self.mesh_size / 2 * (
             self.func(x_point, y_n[-1]) +
-            self.func(x_point + self.mesh_size, prediction)))
+            self.func(x_point + self.mesh_size, prediction))
+        iteration_counts = 0
 
-        return y_n
+        while abs(prediction - next_prediction) > 0.001 and iteration_counts <= 1000: # noqa
+            prediction = next_prediction
+            next_prediction = y_n[-1] + self.mesh_size / 2 * (
+                self.func(x_point, y_n[-1]) +
+                self.func(x_point + self.mesh_size, prediction))
+            iteration_counts += 1
+
+        return next_prediction
 
     def Euler_trapezium(self):
 
@@ -220,7 +248,47 @@ class PredictorCorrector(object):
                 y_n[-1], 1)
             _, prediction = predictor.Euler_explicit()
 
-            y_n = self.corrector_trapezium(x_n[-1], y_n, prediction[-1])
+            y_n.append(self.corrector_trapezium(x_n[-1], y_n, prediction[-1]))
             x_n.append(self.x_min + n * self.mesh_size)
 
-        return y_n
+        return x_n, y_n
+
+    def Euler_trapezium_general(self):
+
+        y_n = [self.initial_value]
+        x_n = [self.x_min]
+
+        for n in range(1, self.mesh_points + 1):
+
+            predictor = OneStepMethods(
+                self.func, self.x_min + (n - 1) * self.mesh_size,
+                self.x_min + n * self.mesh_size,
+                y_n[-1], 1)
+            _, prediction = predictor.Euler_explicit()
+
+            corrector = OneStepMethods(
+                self.func, x_n[-1],
+                x_n[-1] + self.mesh_size,
+                y_n[-1], 1)
+            _, next_correction = corrector.trapezium_rule(
+                prediction=prediction[-1])
+
+            next_correction = next_correction[-1]
+            correction = prediction[-1]
+            iteration_counts = 0
+
+            while abs(correction - next_correction) > 0.001 and iteration_counts <= 1000: # noqa
+                correction = next_correction
+                corrector = OneStepMethods(
+                    self.func, x_n[-1],
+                    x_n[-1] + self.mesh_size,
+                    y_n[-1], 1)
+                _, next_correction = corrector.trapezium_rule(
+                    prediction=correction)
+                next_correction = next_correction[-1]
+                iteration_counts += 1
+
+            y_n.append(next_correction)
+            x_n.append(self.x_min + n * self.mesh_size)
+
+        return x_n, y_n
