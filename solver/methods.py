@@ -169,15 +169,24 @@ class OneStepMethods(object):
         if prediction is not None:
             for n in range(1, self.mesh_points + 1):
                 y_n.append(y_n[-1] + self.mesh_size / 2 * (
-                    self.func(x_n[-1], y_n[-1]) + self.func(x_n[-1] + self.mesh_size, prediction)))
+                    self.func(x_n[-1], y_n[-1]) + self.func(
+                        x_n[-1] + self.mesh_size, prediction)))
                 x_n.append(self.x_min + n * self.mesh_size)
 
         # Calculate approximated solution for each mesh point
-        # if prediction is None:
-            # for n in range(1, self.mesh_points + 1):
-            #     est_y = self.fixed_pt_iteration(y_n[-1], x_n[-1])
-            #     y_n.append(est_y)
-            #     x_n.append(self.x_min + n * self.mesh_size)
+        if prediction is None:
+            prediction = y_n[-1]
+
+            for n in range(1, self.mesh_points + 1):
+
+                def num_method(prediction):
+                    return y_n[-1] + self.mesh_size / 2 * (
+                        self.func(x_n[-1], y_n[-1]) + self.func(
+                            x_n[-1] + self.mesh_size, prediction))
+
+                est_y = self.fixed_pt_iteration(prediction, num_method)
+                y_n.append(est_y)
+                x_n.append(self.x_min + n * self.mesh_size)
 
         return x_n, y_n
 
