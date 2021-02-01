@@ -98,8 +98,8 @@ class TestOneStepMethods(unittest.TestCase):
 
         self.assertEqual(np.shape(mesh), (11,))
         self.assertEqual(np.shape(soln), (11,))
-        # self.assertEqual(soln[1], 0.9091)
-        # self.assertAlmostEqual(soln[2], 0.82719)
+        self.assertEqual(soln[1], 0.9091)
+        self.assertAlmostEqual(round(soln[2],5), 0.82647)
 
     def test_RungeKutta4(self):
 
@@ -140,22 +140,6 @@ class TestPredictorCorrector(unittest.TestCase):
             solver.PredictorCorrector(
                 x_min, x_min, x_max, initial_value, mesh_points)
 
-    # def test_corrector_trapezium(self):
-
-    #     def func(x, y):
-    #         return x + y
-    #     x_min = 0
-    #     x_max = 1
-    #     initial_value = 3
-    #     mesh_points = 20
-
-    #     problem = solver.PredictorCorrector(
-    #         func, x_min, x_max, initial_value, mesh_points)
-
-    #     soln = problem.corrector_trapezium(0, [3], 3.15)
-
-    #     self.assertEqual(soln, 3.155125)
-
     def test_Euler_trapezium(self):
 
         def func(x, y):
@@ -168,10 +152,10 @@ class TestPredictorCorrector(unittest.TestCase):
         problem = solver.PredictorCorrector(
             func, x_min, x_max, initial_value, mesh_points)
 
-        _, soln = problem.Euler_trapezium_general()
-        print(soln)
+        _, soln = problem.Euler_trapezium()
 
-        # self.assertEqual(soln[1], 1.10525)
+        self.assertEqual(soln[1], 1.10525)
+        self.assertEqual(round(soln[2], 5), 1.22158)
 
 
 if __name__ == '__main__':
