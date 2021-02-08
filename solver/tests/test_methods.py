@@ -186,6 +186,7 @@ class TestAdaptiveMethod(unittest.TestCase):
 
         def func(x, y):
             return 10 * np.exp(-(x - 2) * (x - 2) / (2 * 0.075**2)) - 0.6* y
+            # - 1000 * y
         x_min = 0
         x_max = 4
         initial_value = 0.5
@@ -194,12 +195,18 @@ class TestAdaptiveMethod(unittest.TestCase):
             func, x_min, x_max, initial_value)
         mesh, soln = problem.ode23()
 
-        print(mesh)
-        print(soln)
-        plt.figure()
-        plt.scatter(mesh, soln)
-        os.chdir('/mnt/c/Users/user/Documents/PhD Study/PhD Year1/Numerical solution course/')
-        plt.savefig('test.jpg')
+    def test_ode45(self):
+
+        def func(x, y):
+            return 10 * np.exp(-(x - 2) * (x - 2) / (2 * 0.075**2)) - 0.6* y
+            #-1000 * y
+        x_min = 0
+        x_max = 4
+        initial_value = 0.5
+
+        problem = solver.AdaptiveMethod(
+            func, x_min, x_max, initial_value)
+        mesh, soln = problem.ode45()
 
 
 if __name__ == '__main__':

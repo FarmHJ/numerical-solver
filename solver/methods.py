@@ -306,11 +306,11 @@ class AdaptiveMethod(object):
 
             mesh = self.initial_mesh * 3
             error = 2 * (abs_tol + rel_tol)
-            count = 0
 
             while error > max(abs_tol, rel_tol * abs(y_temp)):
 
-                mesh = mesh / 3
+                mesh = 0.9 * mesh * pow(max(abs_tol, rel_tol * abs(y_temp))
+                                        / error, 1 / 3)
                 coef1 = self.func(x_n[-1], y_n[-1])
                 coef2 = self.func(
                     x_n[-1] + mesh / 2,
@@ -328,7 +328,66 @@ class AdaptiveMethod(object):
                 error = mesh / 72 * (
                     -5 * coef1 + 6 * coef2 + 8 * coef3 - 9 * coef4)
                 error = abs(error)
-                count += 1
+
+            y_n.append(y_temp)
+            x_n.append(x_n[-1] + mesh)
+
+        return x_n, y_n
+
+    def ode45(self, abs_tol=1e-6, rel_tol=1e-3):
+
+        abs_tol = abs(abs_tol)
+        rel_tol = abs(rel_tol)
+
+        y_n = [self.initial_value]
+        x_n = [self.x_min]
+
+        y_temp = 2 * (abs_tol + rel_tol)
+
+        while x_n[-1] < self.x_max:
+
+            mesh = self.initial_mesh * 3
+            error = 2 * (abs_tol + rel_tol)
+
+            while error > max(abs_tol, rel_tol * abs(y_temp)):
+
+                mesh = 0.9 * mesh * pow(max(abs_tol, rel_tol * abs(y_temp))
+                                        / error, 0.2)
+                coef1 = self.func(x_n[-1], y_n[-1])
+                coef2 = self.func(
+                    x_n[-1] + mesh / 5,
+                    y_n[-1] + mesh / 5 * coef1)
+                coef3 = self.func(
+                    x_n[-1] + mesh * 3 / 10,
+                    y_n[-1] + mesh * (3 / 40 * coef1 + 9 / 40 * coef2))
+                coef4 = self.func(
+                    x_n[-1] + mesh * 4 / 5,
+                    y_n[-1] + mesh * (44 / 45 * coef1 - 56 / 15 * coef2
+                                      + 32 / 9 * coef3))
+                coef5 = self.func(
+                    x_n[-1] + mesh * 8 / 9,
+                    y_n[-1] + mesh * (19372 / 6561 * coef1 - 25360 / 2187
+                                      * coef2 + 64448 / 6561 * coef3
+                                      - 212 / 729 * coef4))
+                coef6 = self.func(
+                    x_n[-1] + mesh,
+                    y_n[-1] + mesh * (9017 / 3168 * coef1 - 355 / 33
+                                      * coef2 + 46732 / 5247 * coef3
+                                      - 49 / 176 * coef4
+                                      - 5103 / 18656 * coef5))
+
+                y_temp = y_n[-1] + mesh * (
+                    35 / 384 * coef1 + 500 / 1113 * coef3 + 125 / 192 * coef4
+                    - 2187 / 6784 * coef5 + 11 / 84 * coef6)
+
+                coef7 = self.func(
+                    x_n[-1] + mesh, y_temp)
+
+                error = mesh * (
+                    71 / 57600 * coef1 - 71 / 16695 * coef3 + 71 / 1920
+                    * coef4 - 17253 / 339200 * coef5 + 22 / 525 * coef6
+                    - 1 / 40 * coef7)
+                error = abs(error)
 
             y_n.append(y_temp)
             x_n.append(x_n[-1] + mesh)
