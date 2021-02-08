@@ -7,7 +7,9 @@
 
 import unittest
 
+import matplotlib.pyplot as plt
 import numpy as np
+import os
 
 import solver
 
@@ -156,6 +158,48 @@ class TestPredictorCorrector(unittest.TestCase):
 
         self.assertEqual(soln[1], 1.10525)
         self.assertEqual(round(soln[2], 5), 1.22158)
+
+
+class TestAdaptiveMethod(unittest.TestCase):
+    """
+    Test the 'AdaptiveMethod' class.
+    """
+    def test__init__(self):
+
+        def func(x, y):
+            return -y
+        x_min = 0
+        x_max = 1
+        initial_value = 1
+
+        problem = solver.AdaptiveMethod(
+            func, x_min, x_max, initial_value)
+
+        self.assertEqual(problem.x_min, 0)
+        self.assertEqual(problem.initial_value, 1)
+
+        with self.assertRaises(TypeError):
+            solver.AdaptiveMethod(
+                x_min, x_min, x_max, initial_value)
+
+    def test_ode23(self):
+
+        def func(x, y):
+            return 10 * np.exp(-(x - 2) * (x - 2) / (2 * 0.075**2)) - 0.6* y
+        x_min = 0
+        x_max = 4
+        initial_value = 0.5
+
+        problem = solver.AdaptiveMethod(
+            func, x_min, x_max, initial_value)
+        mesh, soln = problem.ode23()
+
+        print(mesh)
+        print(soln)
+        plt.figure()
+        plt.scatter(mesh, soln)
+        os.chdir('/mnt/c/Users/user/Documents/PhD Study/PhD Year1/Numerical solution course/')
+        plt.savefig('test.jpg')
 
 
 if __name__ == '__main__':

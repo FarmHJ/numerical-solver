@@ -262,3 +262,75 @@ class PredictorCorrector(object):
             x_n.append(self.x_min + n * self.mesh_size)
 
         return x_n, y_n
+
+
+class AdaptiveMethod(object):
+    """AdaptiveMethod Class:
+
+    Adaptive numerical method is used to solve a given
+    initial value problem to control errors.
+
+    Parameters
+    ----------
+    func: callable function
+        ODE function to be solved numerically
+    x_min
+        Starting value of mesh
+    initial_value
+        Value of solution at starting point of mesh.
+    """
+
+    def __init__(self, func, x_min, x_max, initial_value):
+        super(AdaptiveMethod, self).__init__()
+
+        if not callable(func):
+            raise TypeError('Input func is not a callable function')
+
+        self.func = func
+        self.x_min = float(x_min)
+        self.x_max = float(x_max)
+        self.initial_value = float(initial_value)
+        self.initial_mesh = 0.5
+
+    def ode23(self, abs_tol=1e-6, rel_tol=1e-3):
+
+        abs_tol = abs(abs_tol)
+        rel_tol = abs(rel_tol)
+
+        y_n = [self.initial_value]
+        x_n = [self.x_min]
+
+        y_temp = 2 * (abs_tol + rel_tol)
+
+        while x_n[-1] < self.x_max:
+
+            mesh = self.initial_mesh * 3
+            error = 2 * (abs_tol + rel_tol)
+            count = 0
+
+            while error > max(abs_tol, rel_tol * abs(y_temp)):
+
+                mesh = mesh / 3
+                coef1 = self.func(x_n[-1], y_n[-1])
+                coef2 = self.func(
+                    x_n[-1] + mesh / 2,
+                    y_n[-1] + mesh / 2 * coef1)
+                coef3 = self.func(
+                    x_n[-1] + mesh * 3 / 4,
+                    y_n[-1] + mesh * 3 / 4 * coef2)
+
+                y_temp = y_n[-1] + mesh / 9 * (
+                    2 * coef1 + 3 * coef2 + 4 * coef3)
+
+                coef4 = self.func(
+                    x_n[-1] + mesh, y_temp)
+
+                error = mesh / 72 * (
+                    -5 * coef1 + 6 * coef2 + 8 * coef3 - 9 * coef4)
+                error = abs(error)
+                count += 1
+
+            y_n.append(y_temp)
+            x_n.append(x_n[-1] + mesh)
+
+        return x_n, y_n

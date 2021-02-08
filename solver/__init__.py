@@ -6,7 +6,8 @@
 
 from .methods import (
     OneStepMethods,
-    PredictorCorrector
+    PredictorCorrector,
+    AdaptiveMethod
 )
 
 from .models import (
