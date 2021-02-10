@@ -280,7 +280,7 @@ class AdaptiveMethod(object):
         Value of solution at starting point of mesh.
     """
 
-    def __init__(self, func, x_min, x_max, initial_value):
+    def __init__(self, func, x_min, x_max, initial_value, initial_mesh=0.2):
         super(AdaptiveMethod, self).__init__()
 
         if not callable(func):
@@ -290,7 +290,7 @@ class AdaptiveMethod(object):
         self.x_min = float(x_min)
         self.x_max = float(x_max)
         self.initial_value = float(initial_value)
-        self.initial_mesh = 0.5
+        self.initial_mesh = float(initial_mesh)
 
     def ode23(self, abs_tol=1e-6, rel_tol=1e-3):
 
@@ -304,13 +304,17 @@ class AdaptiveMethod(object):
 
         while x_n[-1] < self.x_max:
 
-            mesh = self.initial_mesh * 3
             error = 2 * (abs_tol + rel_tol)
+            count = 0
 
             while error > max(abs_tol, rel_tol * abs(y_temp)):
 
-                mesh = 0.9 * mesh * pow(max(abs_tol, rel_tol * abs(y_temp))
-                                        / error, 1 / 3)
+                if count == 0:
+                    mesh = self.initial_mesh
+                else:
+                    mesh = 0.9 * mesh * pow(max(abs_tol, rel_tol * abs(y_temp))
+                                            / error, 1 / 3)
+
                 coef1 = self.func(x_n[-1], y_n[-1])
                 coef2 = self.func(
                     x_n[-1] + mesh / 2,
@@ -328,6 +332,8 @@ class AdaptiveMethod(object):
                 error = mesh / 72 * (
                     -5 * coef1 + 6 * coef2 + 8 * coef3 - 9 * coef4)
                 error = abs(error)
+                count += 1
+                print(y_temp)
 
             y_n.append(y_temp)
             x_n.append(x_n[-1] + mesh)
@@ -346,13 +352,16 @@ class AdaptiveMethod(object):
 
         while x_n[-1] < self.x_max:
 
-            mesh = self.initial_mesh * 3
             error = 2 * (abs_tol + rel_tol)
+            count = 0
 
             while error > max(abs_tol, rel_tol * abs(y_temp)):
 
-                mesh = 0.9 * mesh * pow(max(abs_tol, rel_tol * abs(y_temp))
-                                        / error, 0.2)
+                if count == 0:
+                    mesh = self.initial_mesh
+                else:
+                    mesh = 0.9 * mesh * pow(max(abs_tol, rel_tol * abs(y_temp))
+                                            / error, 0.2)
                 coef1 = self.func(x_n[-1], y_n[-1])
                 coef2 = self.func(
                     x_n[-1] + mesh / 5,
@@ -388,6 +397,7 @@ class AdaptiveMethod(object):
                     * coef4 - 17253 / 339200 * coef5 + 22 / 525 * coef6
                     - 1 / 40 * coef7)
                 error = abs(error)
+                count += 1
 
             y_n.append(y_temp)
             x_n.append(x_n[-1] + mesh)

@@ -185,28 +185,45 @@ class TestAdaptiveMethod(unittest.TestCase):
     def test_ode23(self):
 
         def func(x, y):
-            return 10 * np.exp(-(x - 2) * (x - 2) / (2 * 0.075**2)) - 0.6* y
-            # - 1000 * y
+            return -y
+        # 10 * np.exp(-(x-2)**2 / 2 / (0.075)**2) - 0.6 * y
         x_min = 0
-        x_max = 4
-        initial_value = 0.5
+        x_max = 1
+        initial_value = 1
 
         problem = solver.AdaptiveMethod(
-            func, x_min, x_max, initial_value)
+            func, x_min, x_max, initial_value, initial_mesh=0.5)
         mesh, soln = problem.ode23()
+
+        self.assertGreaterEqual(mesh[-1], 1.0)
+        print(mesh)
+        print(soln)
+
+        os.chdir('/mnt/c/Users/user/Documents/PhD Study/PhD Year1/Numerical solution course/numerical-solver')
+        plt.figure()
+        plt.scatter(mesh, soln)
+        plt.savefig('test23.jpg')
+
 
     def test_ode45(self):
 
         def func(x, y):
-            return 10 * np.exp(-(x - 2) * (x - 2) / (2 * 0.075**2)) - 0.6* y
-            #-1000 * y
+            return -y
+        # 10 * np.exp(-(x-2)**2 / 2 / (0.075)**2) - 0.6 * y
         x_min = 0
-        x_max = 4
-        initial_value = 0.5
+        x_max = 1
+        initial_value = 1
 
         problem = solver.AdaptiveMethod(
             func, x_min, x_max, initial_value)
         mesh, soln = problem.ode45()
+
+        self.assertGreaterEqual(mesh[-1], 1.0)
+
+        os.chdir('/mnt/c/Users/user/Documents/PhD Study/PhD Year1/Numerical solution course/numerical-solver')
+        plt.figure()
+        plt.scatter(mesh, soln)
+        plt.savefig('test45.jpg')
 
 
 if __name__ == '__main__':
