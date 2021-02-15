@@ -38,7 +38,7 @@ class OneStepMethods(object):
         self.initial_value = float(initial_value)
         self.mesh_points = int(mesh_points)
 
-        # Calculate the size of mesh
+        # Calculate the size of mesh.
         self.mesh_size = (self.x_max - self.x_min) / self.mesh_points
 
     def Euler_explicit(self):
@@ -55,7 +55,7 @@ class OneStepMethods(object):
         y_n = [self.initial_value]
         x_n = [self.x_min]
 
-        # Calculate approximated solution for each mesh point
+        # Calculate approximated solution for each mesh point.
         for n in range(1, self.mesh_points + 1):
             y_n.append(y_n[-1] + self.mesh_size * self.func(x_n[-1], y_n[-1]))
             x_n.append(self.x_min + n * self.mesh_size)
@@ -82,13 +82,13 @@ class OneStepMethods(object):
         iteration_counts = 0
         threshold = 0.001
 
-        # Approximate solution with fixed point iteration
+        # Approximate solution with fixed point iteration.
         while abs(prediction - next_prediction) >= threshold and iteration_counts <= 1000: # noqa
             prediction = next_prediction
             next_prediction = numerical_method(prediction)
             iteration_counts += 1
 
-        # Raise error if algorithm doesn't converge
+        # Raise error if algorithm doesn't converge.
         if abs(prediction - next_prediction) < threshold:
             return next_prediction
         else:
@@ -108,10 +108,13 @@ class OneStepMethods(object):
         y_n = [self.initial_value]
         x_n = [self.x_min]
 
-        # Calculate approximated solution for each mesh point
+        # Use value at previous mesh point as prediction for
+        # fixed point iteration if no prediction is given.
         if prediction is None:
             prediction = y_n[-1]
 
+        # Calculate approximated solution for each mesh point.
+        # Use fixed point iteration to solve numerical equation.
         for n in range(1, self.mesh_points + 1):
 
             def num_method(prediction):
@@ -152,7 +155,7 @@ class OneStepMethods(object):
         y_n = [self.initial_value]
         x_n = [self.x_min]
 
-        # Calculate approximated solution for each mesh point
+        # Calculate approximated solution for each mesh point.
         for n in range(1, self.mesh_points + 1):
             k1 = self.func(x_n[-1], y_n[-1])
             k2 = self.func(
@@ -170,14 +173,26 @@ class OneStepMethods(object):
         return x_n, y_n
 
     def trapezium_rule(self, prediction=None):
+        r"""
+        Runs the trapezium rule numerical method to approximate
+        the solution to the initial value problem.
+
+        .. math::
+            y_{n+1} = y_n + \frac{1}{2}h(f(x_{n}, y_{n}), f(x_{n+1}, y_{n+1}))
+
+        where :math:`h` is the mesh size and function :math:`f` is the ODE.
+        """
 
         y_n = [self.initial_value]
         x_n = [self.x_min]
 
-        # Calculate approximated solution for each mesh point
+        # Use value at previous mesh point as prediction for
+        # fixed point iteration if no prediction is given.
         if prediction is None:
             prediction = y_n[-1]
 
+        # Calculate approximated solution for each mesh point.
+        # Use fixed point iteration to solve numerical equation.
         for n in range(1, self.mesh_points + 1):
 
             def num_method(prediction):
@@ -229,16 +244,38 @@ class PredictorCorrector(object):
         # Calculate the size of mesh
         self.mesh_size = (self.x_max - self.x_min) / self.mesh_points
 
-    def Euler_trapezium(self):
+    def Euler_trapezium(self, tol=0.001):
+        r"""
+        Runs the Euler-trapezium predictor-corrector method to approximate
+        the solution to the initial value problem.
+
+        The Euler's explicit method is used as a predictor for the implicit
+        trapezium rule. The trapezium rule, a corrector method, is then
+        run iteratively to estimate the actual solution.
+
+        Predictor:
+        .. math::
+            y_{n+1} = y_n + hf(x_n, y_n)
+
+        Corrector:
+        .. math::
+            y_{n+1} = y_n + \frac{1}{2}h(f(x_{n}, y_{n}), f(x_{n+1}, y_{n+1}))
+
+        where :math:`h` is the mesh size and function :math:`f` is the ODE.
+        """
 
         y_n = [self.initial_value]
         x_n = [self.x_min]
+        tol = abs(tol)
 
+        # Define the trapezium rule, which is the corrector method
         def trapezium(x_point, y_n, prediction):
             return y_n[-1] + self.mesh_size / 2 * (
                 self.func(x_point, y_n[-1]) +
                 self.func(x_point + self.mesh_size, prediction))
 
+        # Calculate approximated solution for each mesh point.
+        # Use Euler's explicit method as predictor
         for n in range(1, self.mesh_points + 1):
 
             predictor = OneStepMethods(
@@ -252,7 +289,7 @@ class PredictorCorrector(object):
             correction = prediction[-1]
             iteration_counts = 0
 
-            while abs(correction - next_correction) > 0.001 and iteration_counts <= 1000: # noqa
+            while abs(correction - next_correction) > tol and iteration_counts <= 1000: # noqa
                 correction = next_correction
                 next_correction = trapezium(
                     x_n[-1], y_n, correction)
@@ -268,7 +305,7 @@ class AdaptiveMethod(object):
     """AdaptiveMethod Class:
 
     Adaptive numerical method is used to solve a given
-    initial value problem to control errors.
+    initial value problem with controlled errors.
 
     Parameters
     ----------
@@ -293,20 +330,64 @@ class AdaptiveMethod(object):
         self.initial_mesh = float(initial_mesh)
 
     def ode23(self, abs_tol=1e-6, rel_tol=1e-3):
+        r"""
+        Runs the BS23 algorithm to approximate the solution to the initial
+        value problem. It involves 2 one step method, one of order 2 and
+        the other of order 3.
 
+        The order 2 method is used to estimate the solution, while the
+        order 3 method is used to estimate the error of the numerical
+        solution. The algorithm terminates when the error is smaller than
+        given tolerance.
+
+        Solution estimation:
+        .. math::
+            y_{n+1} = y_n + \frac{h}{9}(2k_1 + 3k_2 + 4k_3)
+
+        where
+        .. math::
+            s_1 = f(x_n, y_n)
+        .. math::
+            s_2 = f(x_n + \frac{h}{2}, y_n + \frac{h}{2}s_1)    
+        .. math::
+            s_3 = f(x_n + \frac{3h}{4}, y_n + \frac{3h}{4}s_2)
+
+        Error estimation:
+        .. math::
+            e_{n+1} = \frac{h}{72}(-5s_1 + 6s_2 + 8s_3 - 9s_4)
+
+        where
+        .. math::
+            s_4 = f(x_{n+1}, y_{n+1})
+
+        and :math:`h` is the mesh size and function :math:`f` is the ODE.
+
+        If the error is larger than the tolerance, the next mesh point is
+        calculated to be
+
+        .. math::
+            h_{\text{new}} = 0.9h(\frac{\text{tol}}{\text{err}})^\frac{1}{3}
+        """
+
+        # Set the absolute and relative tolerance for the solution.
         abs_tol = abs(abs_tol)
         rel_tol = abs(rel_tol)
 
         y_n = [self.initial_value]
         x_n = [self.x_min]
 
+        # Initialise a temporary solution so that the error is
+        # larger than given tolerance.
         y_temp = 2 * (abs_tol + rel_tol)
 
+        # The adaptive method is run until the mesh point exceeds
+        # given evaluation boundary.
         while x_n[-1] < self.x_max:
 
             error = 2 * (abs_tol + rel_tol)
             count = 0
 
+            # BS23 algorithm, similar to Matlab ode23 function
             while error > max(abs_tol, rel_tol * abs(y_temp)):
 
                 if count == 0:
@@ -333,7 +414,6 @@ class AdaptiveMethod(object):
                     -5 * coef1 + 6 * coef2 + 8 * coef3 - 9 * coef4)
                 error = abs(error)
                 count += 1
-                print(y_temp)
 
             y_n.append(y_temp)
             x_n.append(x_n[-1] + mesh)
@@ -341,20 +421,79 @@ class AdaptiveMethod(object):
         return x_n, y_n
 
     def ode45(self, abs_tol=1e-6, rel_tol=1e-3):
+        r"""
+        Runs the RKF45 algorithm to approximate the solution to the initial
+        value problem. It involves 2 one step method, one of order 4 and
+        the other of order 5.
 
+        The order 4 method is used to estimate the solution, while the
+        order 5 method is used to estimate the error of the numerical
+        solution. The algorithm terminates when the error is smaller than
+        given tolerance.
+
+        Solution estimation:
+        .. math::
+            y_{n+1} = y_n + h(\frac{35}{384}k_1 + \frac{500}{1113}k_3
+                + \frac{125}{192}k_4 - \frac{2187}{6784}k_5 + \frac{11}{84}k_6)
+
+        where
+        .. math::
+            s_1 = f(x_n, y_n)
+        .. math::
+            s_2 = f(x_n + \frac{h}{5}, y_n + \frac{h}{5}s_1)
+        .. math::
+            s_3 = f(x_n + \frac{3h}{10}, y_n + \frac{3h}{40}s_1
+                + \frac{9h}{40}s_2)
+        .. math::
+            s_4 = f(x_n + \frac{4h}{5}, y_n + \frac{44h}{45}s_1
+                - \frac{56h}{15}s_2 + \frac{32h}{9}s_3)
+        .. math::
+            s_5 = f(x_n + \frac{8h}{9}, y_n + \frac{19372h}{6561}s_1
+                - \frac{25360h}{2187}s_2 + \frac{64448h}{6561}s_3
+                - \frac{212h}{729}s_4)
+        .. math::
+            s_6 = f(x_n + h, y_n + \frac{9017h}{3168}s_1
+                - \frac{355h}{33}s_2 + \frac{46732h}{5247}s_3 
+                + \frac{49h}{176}s_4 - \frac{5103h}{18656}s_5)
+
+        Error estimation:
+        .. math::
+            e_{n+1} = h(\frac{71}{57600}s_1 - \frac{71}{16695}s_3
+                + \frac{71}{1920}s_4 - \frac{17253}{339200}s_5
+                + \frac{22}{525}s_6 - \frac{1}{40}s_7)
+
+        where
+        .. math::
+            s_7 = f(x_{n+1}, y_{n+1})
+
+        and :math:`h` is the mesh size and function :math:`f` is the ODE.
+
+        If the error is larger than the tolerance, the next mesh point is
+        calculated to be
+
+        .. math::
+            h_{\text{new}} = 0.9h(\frac{\text{tol}}{\text{err}})^\frac{1}{5}
+        """
+
+        # Set the absolute and relative tolerance for the solution.
         abs_tol = abs(abs_tol)
         rel_tol = abs(rel_tol)
 
         y_n = [self.initial_value]
         x_n = [self.x_min]
 
+        # Initialise a temporary solution so that the error is
+        # larger than given tolerance.
         y_temp = 2 * (abs_tol + rel_tol)
 
+        # The adaptive method is run until the mesh point exceeds
+        # given evaluation boundary.
         while x_n[-1] < self.x_max:
 
             error = 2 * (abs_tol + rel_tol)
             count = 0
 
+            # Modified RKF45 algorithm, similar to Matlab ode45 function
             while error > max(abs_tol, rel_tol * abs(y_temp)):
 
                 if count == 0:
@@ -399,6 +538,7 @@ class AdaptiveMethod(object):
                 error = abs(error)
                 count += 1
 
+            print(count)
             y_n.append(y_temp)
             x_n.append(x_n[-1] + mesh)
 

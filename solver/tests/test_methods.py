@@ -7,9 +7,7 @@
 
 import unittest
 
-import matplotlib.pyplot as plt
 import numpy as np
-import os
 
 import solver
 
@@ -55,35 +53,35 @@ class TestOneStepMethods(unittest.TestCase):
         self.assertEqual(soln[1], 0.9)
         self.assertEqual(soln[2], 0.81)
 
-    # def test_fixed_pt_iteration(self):
+    def test_fixed_pt_iteration(self):
 
-        # def func(x, y):
-        #     return -y
-        # x_min = 0
-        # x_max = 1
-        # initial_value = 1
-        # mesh_points = 10
+        def func(x, y):
+            return -y
+        x_min = 0
+        x_max = 1
+        initial_value = 1
+        mesh_points = 10
 
-        # problem = solver.OneStepMethods(
-        #     func, x_min, x_max, initial_value, mesh_points)
+        problem = solver.OneStepMethods(
+            func, x_min, x_max, initial_value, mesh_points)
 
-        # def method(value):
-        #     return 0.1 * func(0, value)
+        def method(value):
+            return 0.1 * func(0, value) + 1.1
 
-        # y_pred = problem.fixed_pt_iteration(initial_value, method)
+        y_pred = problem.fixed_pt_iteration(initial_value, method)
 
-        # self.assertEqual(y_pred, 0.909)
+        self.assertAlmostEqual(y_pred, 1)
 
-        # def func(x, y):
-        #     return -10 * y
-        # initial_value = 1.1
-        # mesh_points = 10
+        def func(x, y):
+            return -10 * y
+        initial_value = 1.1
+        mesh_points = 10
 
-        # problem = solver.OneStepMethods(
-        #     func, x_min, x_max, initial_value, mesh_points)
+        problem = solver.OneStepMethods(
+            func, x_min, x_max, initial_value, mesh_points)
 
-        # with self.assertRaises(RuntimeError):
-        #     problem.fixed_pt_iteration(initial_value, 0.1)
+        with self.assertRaises(RuntimeError):
+            problem.fixed_pt_iteration(initial_value, method)
 
     def test_Euler_implicit(self):
 
@@ -186,7 +184,6 @@ class TestAdaptiveMethod(unittest.TestCase):
 
         def func(x, y):
             return -y
-        # 10 * np.exp(-(x-2)**2 / 2 / (0.075)**2) - 0.6 * y
         x_min = 0
         x_max = 1
         initial_value = 1
@@ -196,20 +193,13 @@ class TestAdaptiveMethod(unittest.TestCase):
         mesh, soln = problem.ode23()
 
         self.assertGreaterEqual(mesh[-1], 1.0)
-        print(mesh)
-        print(soln)
-
-        os.chdir('/mnt/c/Users/user/Documents/PhD Study/PhD Year1/Numerical solution course/numerical-solver')
-        plt.figure()
-        plt.scatter(mesh, soln)
-        plt.savefig('test23.jpg')
-
+        self.assertAlmostEqual(mesh[1], 0.3483788976565)
+        self.assertAlmostEqual(soln[1], 0.7052580305097)
 
     def test_ode45(self):
 
         def func(x, y):
             return -y
-        # 10 * np.exp(-(x-2)**2 / 2 / (0.075)**2) - 0.6 * y
         x_min = 0
         x_max = 1
         initial_value = 1
@@ -219,11 +209,8 @@ class TestAdaptiveMethod(unittest.TestCase):
         mesh, soln = problem.ode45()
 
         self.assertGreaterEqual(mesh[-1], 1.0)
-
-        os.chdir('/mnt/c/Users/user/Documents/PhD Study/PhD Year1/Numerical solution course/numerical-solver')
-        plt.figure()
-        plt.scatter(mesh, soln)
-        plt.savefig('test45.jpg')
+        self.assertAlmostEqual(mesh[1], 0.2)
+        self.assertAlmostEqual(soln[1], 0.816247173333)
 
 
 if __name__ == '__main__':
