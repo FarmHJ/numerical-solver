@@ -348,7 +348,7 @@ class AdaptiveMethod(object):
         .. math::
             s_1 = f(x_n, y_n)
         .. math::
-            s_2 = f(x_n + \frac{h}{2}, y_n + \frac{h}{2}s_1)    
+            s_2 = f(x_n + \frac{h}{2}, y_n + \frac{h}{2}s_1)
         .. math::
             s_3 = f(x_n + \frac{3h}{4}, y_n + \frac{3h}{4}s_2)
 
@@ -453,7 +453,7 @@ class AdaptiveMethod(object):
                 - \frac{212h}{729}s_4)
         .. math::
             s_6 = f(x_n + h, y_n + \frac{9017h}{3168}s_1
-                - \frac{355h}{33}s_2 + \frac{46732h}{5247}s_3 
+                - \frac{355h}{33}s_2 + \frac{46732h}{5247}s_3
                 + \frac{49h}{176}s_4 - \frac{5103h}{18656}s_5)
 
         Error estimation:

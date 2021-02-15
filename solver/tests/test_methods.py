@@ -99,7 +99,7 @@ class TestOneStepMethods(unittest.TestCase):
         self.assertEqual(np.shape(mesh), (11,))
         self.assertEqual(np.shape(soln), (11,))
         self.assertEqual(soln[1], 0.9091)
-        self.assertAlmostEqual(round(soln[2],5), 0.82647)
+        self.assertAlmostEqual(round(soln[2], 5), 0.82647)
 
     def test_RungeKutta4(self):
 
