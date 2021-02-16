@@ -254,10 +254,12 @@ class PredictorCorrector(object):
         run iteratively to estimate the actual solution.
 
         Predictor:
+
         .. math::
             y_{n+1} = y_n + hf(x_n, y_n)
 
         Corrector:
+
         .. math::
             y_{n+1} = y_n + \frac{1}{2}h(f(x_{n}, y_{n}), f(x_{n+1}, y_{n+1}))
 
@@ -341,10 +343,12 @@ class AdaptiveMethod(object):
         given tolerance.
 
         Solution estimation:
+
         .. math::
             y_{n+1} = y_n + \frac{h}{9}(2k_1 + 3k_2 + 4k_3)
 
         where
+
         .. math::
             s_1 = f(x_n, y_n)
         .. math::
@@ -353,10 +357,12 @@ class AdaptiveMethod(object):
             s_3 = f(x_n + \frac{3h}{4}, y_n + \frac{3h}{4}s_2)
 
         Error estimation:
+
         .. math::
             e_{n+1} = \frac{h}{72}(-5s_1 + 6s_2 + 8s_3 - 9s_4)
 
         where
+
         .. math::
             s_4 = f(x_{n+1}, y_{n+1})
 
@@ -432,11 +438,13 @@ class AdaptiveMethod(object):
         given tolerance.
 
         Solution estimation:
+
         .. math::
             y_{n+1} = y_n + h(\frac{35}{384}k_1 + \frac{500}{1113}k_3
                 + \frac{125}{192}k_4 - \frac{2187}{6784}k_5 + \frac{11}{84}k_6)
 
         where
+
         .. math::
             s_1 = f(x_n, y_n)
         .. math::
@@ -457,12 +465,14 @@ class AdaptiveMethod(object):
                 + \frac{49h}{176}s_4 - \frac{5103h}{18656}s_5)
 
         Error estimation:
+
         .. math::
             e_{n+1} = h(\frac{71}{57600}s_1 - \frac{71}{16695}s_3
                 + \frac{71}{1920}s_4 - \frac{17253}{339200}s_5
                 + \frac{22}{525}s_6 - \frac{1}{40}s_7)
 
         where
+
         .. math::
             s_7 = f(x_{n+1}, y_{n+1})
 
