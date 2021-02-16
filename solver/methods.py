@@ -538,7 +538,6 @@ class AdaptiveMethod(object):
                 error = abs(error)
                 count += 1
 
-            print(count)
             y_n.append(y_temp)
             x_n.append(x_n[-1] + mesh)
 

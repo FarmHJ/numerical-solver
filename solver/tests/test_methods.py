@@ -114,7 +114,26 @@ class TestOneStepMethods(unittest.TestCase):
             func, x_min, x_max, initial_value, mesh_points)
         mesh, soln = problem.RungeKutta4()
 
+        self.assertEqual(np.shape(mesh), (11,))
+        self.assertEqual(np.shape(soln), (11,))
         self.assertAlmostEqual(soln[1], 1.10517083)
+
+    def test_trapezium_rule(self):
+
+        def func(x, y):
+            return -y
+        x_min = 0
+        x_max = 1
+        initial_value = 1
+        mesh_points = 10
+
+        problem = solver.OneStepMethods(
+            func, x_min, x_max, initial_value, mesh_points)
+        mesh, soln = problem.trapezium_rule()
+
+        self.assertEqual(np.shape(mesh), (11,))
+        self.assertEqual(np.shape(soln), (11,))
+        self.assertAlmostEqual(soln[1], 0.904749999999)
 
 
 class TestPredictorCorrector(unittest.TestCase):
@@ -211,6 +230,9 @@ class TestAdaptiveMethod(unittest.TestCase):
         self.assertGreaterEqual(mesh[-1], 1.0)
         self.assertAlmostEqual(mesh[1], 0.2)
         self.assertAlmostEqual(soln[1], 0.816247173333)
+
+        mesh, soln = problem.ode45(rel_tol=7e-4)
+        self.assertAlmostEqual(mesh[1], 0.1679939278)
 
 
 if __name__ == '__main__':
