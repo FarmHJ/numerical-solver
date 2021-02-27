@@ -30,12 +30,15 @@ class OneStepMethods(object):
         super(OneStepMethods, self).__init__()
 
         if not callable(func):
-            raise TypeError('Input func is not a callable function')
+            raise TypeError('Input func is not a callable function.')
+
+        if not isinstance(initial_value, list):
+            raise TypeError('Input initial_value is not a list.')
 
         self.func = func
         self.x_min = float(x_min)
         self.x_max = float(x_max)
-        self.initial_value = float(initial_value)
+        self.initial_value = initial_value
         self.mesh_points = int(mesh_points)
 
         # Calculate the size of mesh.
@@ -57,6 +60,7 @@ class OneStepMethods(object):
 
         # Calculate approximated solution for each mesh point.
         for n in range(1, self.mesh_points + 1):
+            
             y_n.append(y_n[-1] + self.mesh_size * self.func(x_n[-1], y_n[-1]))
             x_n.append(self.x_min + n * self.mesh_size)
 
