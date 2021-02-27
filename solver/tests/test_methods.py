@@ -42,10 +42,10 @@ class TestOneStepMethods(unittest.TestCase):
     def test_Euler_explicit(self):
 
         def func(x, y):
-            return [-y[0]]
+            return [-y[0], y[1]]
         x_min = 0
         x_max = 1
-        initial_value = [1]
+        initial_value = [1, 1]
         mesh_points = 10
 
         problem = solver.OneStepMethods(
@@ -53,9 +53,11 @@ class TestOneStepMethods(unittest.TestCase):
         mesh, soln = problem.Euler_explicit()
 
         self.assertEqual(np.shape(mesh), (11,))
-        self.assertEqual(np.shape(soln), (11, 1))
+        self.assertEqual(np.shape(soln), (11, 2))
         self.assertEqual(soln[1][0], 0.9)
         self.assertEqual(soln[2][0], 0.81)
+        self.assertEqual(soln[1][1], 1.1)
+        self.assertAlmostEqual(soln[2][1], 1.21)
 
     def test_fixed_pt_iteration(self):
 
@@ -90,10 +92,10 @@ class TestOneStepMethods(unittest.TestCase):
     def test_Euler_implicit(self):
 
         def func(x, y):
-            return [-y[0]]
+            return [-y[0], y[1]]
         x_min = 0
         x_max = 1
-        initial_value = [1]
+        initial_value = [1, 1]
         mesh_points = 10
 
         problem = solver.OneStepMethods(
@@ -101,9 +103,11 @@ class TestOneStepMethods(unittest.TestCase):
         mesh, soln = problem.Euler_implicit()
 
         self.assertEqual(np.shape(mesh), (11,))
-        self.assertEqual(np.shape(soln), (11, 1))
+        self.assertEqual(np.shape(soln), (11, 2))
         self.assertEqual(soln[1][0], 0.9091)
         self.assertAlmostEqual(round(soln[2][0], 5), 0.82647)
+        self.assertEqual(soln[1][1], 1.1111)
+        self.assertAlmostEqual(soln[2][1], 1.2345321)
 
     def test_RungeKutta4(self):
 
