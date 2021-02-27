@@ -607,6 +607,7 @@ class AdaptiveMethod(object):
                         coef1, coef3, coef4, coef5, coef6, coef7)]
                 error = np.linalg.norm(np.array(error))
                 count += 1
+                print(count)
 
             y_n.append(y_temp)
             x_n.append(x_n[-1] + mesh)
