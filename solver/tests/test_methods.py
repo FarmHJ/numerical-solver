@@ -140,103 +140,111 @@ class TestOneStepMethods(unittest.TestCase):
         self.assertAlmostEqual(soln[1][0], 0.904749999999)
 
 
-# class TestPredictorCorrector(unittest.TestCase):
-#     """
-#     Test the 'PredictorCorrector' class.
-#     """
-#     def test__init__(self):
+class TestPredictorCorrector(unittest.TestCase):
+    """
+    Test the 'PredictorCorrector' class.
+    """
+    def test__init__(self):
 
-#         def func(x, y):
-#             return -y
-#         x_min = 0
-#         x_max = 1
-#         initial_value = 1
-#         mesh_points = 10
+        def func(x, y):
+            return [-y[0]]
+        x_min = 0
+        x_max = 1
+        initial_value = [1]
+        mesh_points = 10
 
-#         problem = solver.PredictorCorrector(
-#             func, x_min, x_max, initial_value, mesh_points)
+        problem = solver.PredictorCorrector(
+            func, x_min, x_max, initial_value, mesh_points)
 
-#         self.assertEqual(problem.x_min, 0)
-#         self.assertEqual(problem.mesh_points, 10)
+        self.assertEqual(problem.x_min, 0)
+        self.assertEqual(problem.mesh_points, 10)
 
-#         with self.assertRaises(TypeError):
-#             solver.PredictorCorrector(
-#                 x_min, x_min, x_max, initial_value, mesh_points)
+        with self.assertRaises(TypeError):
+            solver.PredictorCorrector(
+                x_min, x_min, x_max, initial_value, mesh_points)
 
-#     def test_Euler_trapezium(self):
+        with self.assertRaises(TypeError):
+            solver.PredictorCorrector(
+                func, x_min, x_max, 1, mesh_points)
 
-#         def func(x, y):
-#             return y
-#         x_min = 0
-#         x_max = 1
-#         initial_value = 1
-#         mesh_points = 10
+    def test_Euler_trapezium(self):
 
-#         problem = solver.PredictorCorrector(
-#             func, x_min, x_max, initial_value, mesh_points)
+        def func(x, y):
+            return [y[0]]
+        x_min = 0
+        x_max = 1
+        initial_value = [1]
+        mesh_points = 10
 
-#         _, soln = problem.Euler_trapezium()
+        problem = solver.PredictorCorrector(
+            func, x_min, x_max, initial_value, mesh_points)
 
-#         self.assertEqual(soln[1], 1.10525)
-#         self.assertEqual(round(soln[2], 5), 1.22158)
+        _, soln = problem.Euler_trapezium()
+
+        self.assertEqual(soln[1][0], 1.10525)
+        self.assertEqual(round(soln[2][0], 5), 1.22158)
 
 
-# class TestAdaptiveMethod(unittest.TestCase):
-#     """
-#     Test the 'AdaptiveMethod' class.
-#     """
-#     def test__init__(self):
+class TestAdaptiveMethod(unittest.TestCase):
+    """
+    Test the 'AdaptiveMethod' class.
+    """
+    def test__init__(self):
 
-#         def func(x, y):
-#             return -y
-#         x_min = 0
-#         x_max = 1
-#         initial_value = 1
+        def func(x, y):
+            return [-y[0]]
+        x_min = 0
+        x_max = 1
+        initial_value = [1]
 
-#         problem = solver.AdaptiveMethod(
-#             func, x_min, x_max, initial_value)
+        problem = solver.AdaptiveMethod(
+            func, x_min, x_max, initial_value)
 
-#         self.assertEqual(problem.x_min, 0)
-#         self.assertEqual(problem.initial_value, 1)
+        self.assertEqual(problem.x_min, 0)
+        self.assertEqual(problem.initial_value, [1])
 
-#         with self.assertRaises(TypeError):
-#             solver.AdaptiveMethod(
-#                 x_min, x_min, x_max, initial_value)
+        with self.assertRaises(TypeError):
+            solver.AdaptiveMethod(
+                x_min, x_min, x_max, initial_value)
 
-#     def test_ode23(self):
+        with self.assertRaises(TypeError):
+            solver.AdaptiveMethod(
+                func, x_min, x_max, 1)
 
-#         def func(x, y):
-#             return -y
-#         x_min = 0
-#         x_max = 1
-#         initial_value = 1
+    def test_ode23(self):
 
-#         problem = solver.AdaptiveMethod(
-#             func, x_min, x_max, initial_value, initial_mesh=0.5)
-#         mesh, soln = problem.ode23()
+        def func(x, y):
+            return [-y[0]]
+        x_min = 0
+        x_max = 1
+        initial_value = [1]
 
-#         self.assertGreaterEqual(mesh[-1], 1.0)
-#         self.assertAlmostEqual(mesh[1], 0.3483788976565)
-#         self.assertAlmostEqual(soln[1], 0.7052580305097)
+        problem = solver.AdaptiveMethod(
+            func, x_min, x_max, initial_value, initial_mesh=0.5)
+        mesh, soln = problem.ode23()
 
-#     def test_ode45(self):
+        self.assertGreaterEqual(mesh[-1], 1.0)
+        self.assertAlmostEqual(mesh[1], 0.3483788976565)
+        self.assertAlmostEqual(soln[1][0], 0.7052580305097)
 
-#         def func(x, y):
-#             return -y
-#         x_min = 0
-#         x_max = 1
-#         initial_value = 1
+    def test_ode45(self):
 
-#         problem = solver.AdaptiveMethod(
-#             func, x_min, x_max, initial_value)
-#         mesh, soln = problem.ode45()
+        def func(x, y):
+            return [-y[0]]
+        x_min = 0
+        x_max = 1
+        initial_value = [1]
 
-#         self.assertGreaterEqual(mesh[-1], 1.0)
-#         self.assertAlmostEqual(mesh[1], 0.2)
-#         self.assertAlmostEqual(soln[1], 0.816247173333)
+        problem = solver.AdaptiveMethod(
+            func, x_min, x_max, initial_value)
+        mesh, soln = problem.ode45()
 
-#         mesh, soln = problem.ode45(rel_tol=7e-4)
-#         self.assertAlmostEqual(mesh[1], 0.1679939278)
+        self.assertGreaterEqual(mesh[-1], 1.0)
+        self.assertAlmostEqual(mesh[1], 0.2)
+        self.assertAlmostEqual(soln[1][0], 0.816247173333)
+
+        mesh, soln = problem.ode45(rel_tol=7e-4)
+        self.assertAlmostEqual(mesh[1], 0.1679939278)
 
 
 if __name__ == '__main__':
