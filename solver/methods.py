@@ -5,6 +5,8 @@
 # license details.
 #
 
+import numpy as np
+
 
 class OneStepMethods(object):
     """OneStepMethods Class:
@@ -60,8 +62,8 @@ class OneStepMethods(object):
 
         # Calculate approximated solution for each mesh point.
         for n in range(1, self.mesh_points + 1):
-            
-            y_n.append(y_n[-1] + self.mesh_size * self.func(x_n[-1], y_n[-1]))
+            step = [self.mesh_size * f for f in self.func(x_n[-1], y_n[-1])]
+            y_n.append([a + b for a, b in zip(y_n[-1], step)])
             x_n.append(self.x_min + n * self.mesh_size)
 
         return x_n, y_n
@@ -87,13 +89,17 @@ class OneStepMethods(object):
         threshold = 0.001
 
         # Approximate solution with fixed point iteration.
-        while abs(prediction - next_prediction) >= threshold and iteration_counts <= 1000: # noqa
+        while np.linalg.norm(
+            np.array(prediction) - np.array(
+                next_prediction)) >= threshold and iteration_counts <= 1000:
             prediction = next_prediction
             next_prediction = numerical_method(prediction)
             iteration_counts += 1
 
         # Raise error if algorithm doesn't converge.
-        if abs(prediction - next_prediction) < threshold:
+        if np.linalg.norm(
+            np.array(prediction) - np.array(
+                next_prediction)) < threshold:
             return next_prediction
         else:
             raise RuntimeError('Fixed point iteration does not converge')
@@ -122,8 +128,9 @@ class OneStepMethods(object):
         for n in range(1, self.mesh_points + 1):
 
             def num_method(prediction):
-                return y_n[-1] + self.mesh_size * (
-                    self.func(x_n[-1] + self.mesh_size, prediction))
+                step = [self.mesh_size * f for f in self.func(
+                    x_n[-1] + self.mesh_size, prediction)]
+                return [a + b for a, b in zip(y_n[-1], step)]
 
             est_y = self.fixed_pt_iteration(prediction, num_method)
             y_n.append(est_y)
@@ -161,17 +168,31 @@ class OneStepMethods(object):
 
         # Calculate approximated solution for each mesh point.
         for n in range(1, self.mesh_points + 1):
+            # step = [self.mesh_size * f for f in self.func(x_n[-1], y_n[-1])]
+            # y_n.append([a + b for a, b in zip(y_n[-1], step)])
+
             k1 = self.func(x_n[-1], y_n[-1])
+
+            k2_input = [
+                a + self.mesh_size / 2 * b for a, b in zip(y_n[-1], k1)]
             k2 = self.func(
-                x_n[-1] + self.mesh_size / 2,
-                y_n[-1] + self.mesh_size / 2 * k1)
+                x_n[-1] + self.mesh_size / 2, k2_input)
+
+            k3_input = [
+                a + self.mesh_size / 2 * b for a, b in zip(y_n[-1], k2)]
             k3 = self.func(
-                x_n[-1] + self.mesh_size / 2,
-                y_n[-1] + self.mesh_size / 2 * k2)
+                x_n[-1] + self.mesh_size / 2, k3_input)
+
+            k4_input = [
+                a + self.mesh_size * b for a, b in zip(y_n[-1], k3)]
             k4 = self.func(
-                x_n[-1] + self.mesh_size, y_n[-1] + self.mesh_size * k3)
-            funcs_value = k1 + 2 * k2 + 2 * k3 + k4
-            y_n.append(y_n[-1] + self.mesh_size / 6 * funcs_value)
+                x_n[-1] + self.mesh_size, k4_input)
+
+            funcs_value = [
+                a + 2 * b + 2 * c + d for a, b, c, d in zip(k1, k2, k3, k4)]
+            y_n.append(
+                [a + self.mesh_size / 6 * b for a, b in zip(
+                    y_n[-1], funcs_value)])
             x_n.append(self.x_min + n * self.mesh_size)
 
         return x_n, y_n
@@ -200,9 +221,10 @@ class OneStepMethods(object):
         for n in range(1, self.mesh_points + 1):
 
             def num_method(prediction):
-                return y_n[-1] + self.mesh_size / 2 * (
-                    self.func(x_n[-1], y_n[-1]) + self.func(
-                        x_n[-1] + self.mesh_size, prediction))
+                previous_func = self.func(x_n[-1], y_n[-1])
+                new_func = self.func(x_n[-1] + self.mesh_size, prediction)
+                return [a + self.mesh_size / 2 * (b + c) for a, b, c in zip(
+                    y_n[-1], previous_func, new_func)]
 
             est_y = self.fixed_pt_iteration(prediction, num_method)
             y_n.append(est_y)
