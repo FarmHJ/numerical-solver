@@ -40,7 +40,7 @@ class TestOneStepMethods(unittest.TestCase):
         # Test raised error if initial_value not list
         with self.assertRaises(TypeError):
             solver.OneStepMethods(
-                x_min, x_min, x_max, 1, mesh_points)
+                func, x_min, x_max, 1, mesh_points)
 
     def test_Euler_explicit(self):
 
