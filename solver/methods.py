@@ -5,6 +5,8 @@
 # license details.
 #
 
+import numpy as np
+
 
 class OneStepMethods(object):
     """OneStepMethods Class:
@@ -30,12 +32,15 @@ class OneStepMethods(object):
         super(OneStepMethods, self).__init__()
 
         if not callable(func):
-            raise TypeError('Input func is not a callable function')
+            raise TypeError('Input func is not a callable function.')
+
+        if not isinstance(initial_value, list):
+            raise TypeError('Input initial_value is not a list.')
 
         self.func = func
         self.x_min = float(x_min)
         self.x_max = float(x_max)
-        self.initial_value = float(initial_value)
+        self.initial_value = initial_value
         self.mesh_points = int(mesh_points)
 
         # Calculate the size of mesh.
@@ -57,7 +62,8 @@ class OneStepMethods(object):
 
         # Calculate approximated solution for each mesh point.
         for n in range(1, self.mesh_points + 1):
-            y_n.append(y_n[-1] + self.mesh_size * self.func(x_n[-1], y_n[-1]))
+            step = [self.mesh_size * f for f in self.func(x_n[-1], y_n[-1])]
+            y_n.append([a + b for a, b in zip(y_n[-1], step)])
             x_n.append(self.x_min + n * self.mesh_size)
 
         return x_n, y_n
@@ -83,13 +89,17 @@ class OneStepMethods(object):
         threshold = 0.001
 
         # Approximate solution with fixed point iteration.
-        while abs(prediction - next_prediction) >= threshold and iteration_counts <= 1000: # noqa
+        while np.linalg.norm(
+            np.array(prediction) - np.array(
+                next_prediction)) >= threshold and iteration_counts <= 1000:
             prediction = next_prediction
             next_prediction = numerical_method(prediction)
             iteration_counts += 1
 
         # Raise error if algorithm doesn't converge.
-        if abs(prediction - next_prediction) < threshold:
+        if np.linalg.norm(
+            np.array(prediction) - np.array(
+                next_prediction)) < threshold:
             return next_prediction
         else:
             raise RuntimeError('Fixed point iteration does not converge')
@@ -118,8 +128,9 @@ class OneStepMethods(object):
         for n in range(1, self.mesh_points + 1):
 
             def num_method(prediction):
-                return y_n[-1] + self.mesh_size * (
-                    self.func(x_n[-1] + self.mesh_size, prediction))
+                step = [self.mesh_size * f for f in self.func(
+                    x_n[-1] + self.mesh_size, prediction)]
+                return [a + b for a, b in zip(y_n[-1], step)]
 
             est_y = self.fixed_pt_iteration(prediction, num_method)
             y_n.append(est_y)
@@ -157,17 +168,31 @@ class OneStepMethods(object):
 
         # Calculate approximated solution for each mesh point.
         for n in range(1, self.mesh_points + 1):
+            # step = [self.mesh_size * f for f in self.func(x_n[-1], y_n[-1])]
+            # y_n.append([a + b for a, b in zip(y_n[-1], step)])
+
             k1 = self.func(x_n[-1], y_n[-1])
+
+            k2_input = [
+                a + self.mesh_size / 2 * b for a, b in zip(y_n[-1], k1)]
             k2 = self.func(
-                x_n[-1] + self.mesh_size / 2,
-                y_n[-1] + self.mesh_size / 2 * k1)
+                x_n[-1] + self.mesh_size / 2, k2_input)
+
+            k3_input = [
+                a + self.mesh_size / 2 * b for a, b in zip(y_n[-1], k2)]
             k3 = self.func(
-                x_n[-1] + self.mesh_size / 2,
-                y_n[-1] + self.mesh_size / 2 * k2)
+                x_n[-1] + self.mesh_size / 2, k3_input)
+
+            k4_input = [
+                a + self.mesh_size * b for a, b in zip(y_n[-1], k3)]
             k4 = self.func(
-                x_n[-1] + self.mesh_size, y_n[-1] + self.mesh_size * k3)
-            funcs_value = k1 + 2 * k2 + 2 * k3 + k4
-            y_n.append(y_n[-1] + self.mesh_size / 6 * funcs_value)
+                x_n[-1] + self.mesh_size, k4_input)
+
+            funcs_value = [
+                a + 2 * b + 2 * c + d for a, b, c, d in zip(k1, k2, k3, k4)]
+            y_n.append(
+                [a + self.mesh_size / 6 * b for a, b in zip(
+                    y_n[-1], funcs_value)])
             x_n.append(self.x_min + n * self.mesh_size)
 
         return x_n, y_n
@@ -196,9 +221,10 @@ class OneStepMethods(object):
         for n in range(1, self.mesh_points + 1):
 
             def num_method(prediction):
-                return y_n[-1] + self.mesh_size / 2 * (
-                    self.func(x_n[-1], y_n[-1]) + self.func(
-                        x_n[-1] + self.mesh_size, prediction))
+                previous_func = self.func(x_n[-1], y_n[-1])
+                new_func = self.func(x_n[-1] + self.mesh_size, prediction)
+                return [a + self.mesh_size / 2 * (b + c) for a, b, c in zip(
+                    y_n[-1], previous_func, new_func)]
 
             est_y = self.fixed_pt_iteration(prediction, num_method)
             y_n.append(est_y)
@@ -235,10 +261,13 @@ class PredictorCorrector(object):
         if not callable(func):
             raise TypeError('Input func is not a callable function')
 
+        if not isinstance(initial_value, list):
+            raise TypeError('Input initial_value is not a list.')
+
         self.func = func
         self.x_min = float(x_min)
         self.x_max = float(x_max)
-        self.initial_value = float(initial_value)
+        self.initial_value = initial_value
         self.mesh_points = int(mesh_points)
 
         # Calculate the size of mesh
@@ -272,9 +301,10 @@ class PredictorCorrector(object):
 
         # Define the trapezium rule, which is the corrector method
         def trapezium(x_point, y_n, prediction):
-            return y_n[-1] + self.mesh_size / 2 * (
-                self.func(x_point, y_n[-1]) +
-                self.func(x_point + self.mesh_size, prediction))
+            previous_func = self.func(x_point, y_n[-1])
+            new_func = self.func(x_point + self.mesh_size, prediction)
+            return [a + self.mesh_size / 2 * (b + c) for a, b, c in zip(
+                y_n[-1], previous_func, new_func)]
 
         # Calculate approximated solution for each mesh point.
         # Use Euler's explicit method as predictor
@@ -291,7 +321,9 @@ class PredictorCorrector(object):
             correction = prediction[-1]
             iteration_counts = 0
 
-            while abs(correction - next_correction) > tol and iteration_counts <= 1000: # noqa
+            while np.linalg.norm(
+                np.array(correction) - np.array(
+                    next_correction)) > tol and iteration_counts <= 1000:
                 correction = next_correction
                 next_correction = trapezium(
                     x_n[-1], y_n, correction)
@@ -325,10 +357,13 @@ class AdaptiveMethod(object):
         if not callable(func):
             raise TypeError('Input func is not a callable function')
 
+        if not isinstance(initial_value, list):
+            raise TypeError('Input initial_value is not a list.')
+
         self.func = func
         self.x_min = float(x_min)
         self.x_max = float(x_max)
-        self.initial_value = float(initial_value)
+        self.initial_value = initial_value
         self.initial_mesh = float(initial_mesh)
 
     def ode23(self, abs_tol=1e-6, rel_tol=1e-3):
@@ -384,7 +419,7 @@ class AdaptiveMethod(object):
 
         # Initialise a temporary solution so that the error is
         # larger than given tolerance.
-        y_temp = 2 * (abs_tol + rel_tol)
+        y_temp = [2 * (abs_tol + rel_tol)] * len(self.initial_value)
 
         # The adaptive method is run until the mesh point exceeds
         # given evaluation boundary.
@@ -394,31 +429,39 @@ class AdaptiveMethod(object):
             count = 0
 
             # BS23 algorithm, similar to Matlab ode23 function
-            while error > max(abs_tol, rel_tol * abs(y_temp)):
+            while error > max(abs_tol, rel_tol * np.linalg.norm(
+                    np.array(y_temp))):
 
                 if count == 0:
                     mesh = self.initial_mesh
                 else:
-                    mesh = 0.9 * mesh * pow(max(abs_tol, rel_tol * abs(y_temp))
-                                            / error, 1 / 3)
+                    mesh = 0.9 * mesh * pow(max(
+                        abs_tol, rel_tol * np.linalg.norm(
+                            np.array(y_temp))) / error, 1 / 3)
 
                 coef1 = self.func(x_n[-1], y_n[-1])
+
+                coef2_input = [
+                    a + mesh / 2 * b for a, b in zip(y_n[-1], coef1)]
                 coef2 = self.func(
-                    x_n[-1] + mesh / 2,
-                    y_n[-1] + mesh / 2 * coef1)
+                    x_n[-1] + mesh / 2, coef2_input)
+
+                coef3_input = [
+                    a + mesh * 3 / 4 * b for a, b in zip(y_n[-1], coef2)]
                 coef3 = self.func(
-                    x_n[-1] + mesh * 3 / 4,
-                    y_n[-1] + mesh * 3 / 4 * coef2)
+                    x_n[-1] + mesh * 3 / 4, coef3_input)
 
-                y_temp = y_n[-1] + mesh / 9 * (
-                    2 * coef1 + 3 * coef2 + 4 * coef3)
+                y_temp = [a + mesh / 9 * (
+                    2 * b + 3 * c + 4 * d) for a, b, c, d in zip(
+                        y_n[-1], coef1, coef2, coef3)]
 
-                coef4 = self.func(
-                    x_n[-1] + mesh, y_temp)
+                coef4 = self.func(x_n[-1] + mesh, y_temp)
 
-                error = mesh / 72 * (
-                    -5 * coef1 + 6 * coef2 + 8 * coef3 - 9 * coef4)
-                error = abs(error)
+                error = [mesh / 72 * (
+                    -5 * a + 6 * b + 8 * c - 9 * d) for a, b, c, d in zip(
+                        coef1, coef2, coef3, coef4)]
+
+                error = np.linalg.norm(np.array(error))
                 count += 1
 
             y_n.append(y_temp)
@@ -494,7 +537,7 @@ class AdaptiveMethod(object):
 
         # Initialise a temporary solution so that the error is
         # larger than given tolerance.
-        y_temp = 2 * (abs_tol + rel_tol)
+        y_temp = [2 * (abs_tol + rel_tol)] * len(self.initial_value)
 
         # The adaptive method is run until the mesh point exceeds
         # given evaluation boundary.
@@ -504,48 +547,65 @@ class AdaptiveMethod(object):
             count = 0
 
             # Modified RKF45 algorithm, similar to Matlab ode45 function
-            while error > max(abs_tol, rel_tol * abs(y_temp)):
+            while error > max(abs_tol, rel_tol * np.linalg.norm(
+                    np.array(y_temp))):
 
                 if count == 0:
                     mesh = self.initial_mesh
                 else:
-                    mesh = 0.9 * mesh * pow(max(abs_tol, rel_tol * abs(y_temp))
-                                            / error, 0.2)
+                    mesh = 0.9 * mesh * pow(max(
+                        abs_tol, rel_tol * np.linalg.norm(
+                            np.array(y_temp))) / error, 0.2)
+
                 coef1 = self.func(x_n[-1], y_n[-1])
+
+                coef2_input = [
+                    a + mesh / 5 * b for a, b in zip(y_n[-1], coef1)]
                 coef2 = self.func(
-                    x_n[-1] + mesh / 5,
-                    y_n[-1] + mesh / 5 * coef1)
+                    x_n[-1] + mesh / 5, coef2_input)
+
+                coef3_input = [a + mesh * (
+                    3 / 40 * b + 9 / 40 * c) for a, b, c in zip(
+                        y_n[-1], coef1, coef2)]
                 coef3 = self.func(
-                    x_n[-1] + mesh * 3 / 10,
-                    y_n[-1] + mesh * (3 / 40 * coef1 + 9 / 40 * coef2))
+                    x_n[-1] + mesh * 3 / 10, coef3_input)
+
+                coef4_input = [a + mesh * (
+                    44 / 45 * b - 56 / 15 * c
+                    + 32 / 9 * d) for a, b, c, d in zip(
+                        y_n[-1], coef1, coef2, coef3)]
                 coef4 = self.func(
-                    x_n[-1] + mesh * 4 / 5,
-                    y_n[-1] + mesh * (44 / 45 * coef1 - 56 / 15 * coef2
-                                      + 32 / 9 * coef3))
+                    x_n[-1] + mesh * 4 / 5, coef4_input)
+
+                coef5_input = [a + mesh * (
+                    19372 / 6561 * b - 25360 / 2187 * c + 64448 / 6561 * d
+                    - 212 / 729 * e) for a, b, c, d, e in zip(
+                        y_n[-1], coef1, coef2, coef3, coef4)]
                 coef5 = self.func(
-                    x_n[-1] + mesh * 8 / 9,
-                    y_n[-1] + mesh * (19372 / 6561 * coef1 - 25360 / 2187
-                                      * coef2 + 64448 / 6561 * coef3
-                                      - 212 / 729 * coef4))
+                    x_n[-1] + mesh * 8 / 9, coef5_input)
+
+                coef6_input = [a + mesh * (
+                    9017 / 3168 * b - 355 / 33 * c + 46732 / 5247 * d
+                    - 49 / 176 * e - 5103 / 18656 * f) for (
+                        a, b, c, d, e, f) in zip(
+                            y_n[-1], coef1, coef2, coef3, coef4, coef5)]
                 coef6 = self.func(
-                    x_n[-1] + mesh,
-                    y_n[-1] + mesh * (9017 / 3168 * coef1 - 355 / 33
-                                      * coef2 + 46732 / 5247 * coef3
-                                      - 49 / 176 * coef4
-                                      - 5103 / 18656 * coef5))
+                    x_n[-1] + mesh, coef6_input)
 
-                y_temp = y_n[-1] + mesh * (
-                    35 / 384 * coef1 + 500 / 1113 * coef3 + 125 / 192 * coef4
-                    - 2187 / 6784 * coef5 + 11 / 84 * coef6)
+                y_temp = [a + mesh * (
+                    35 / 384 * b + 500 / 1113 * c + 125 / 192 * d
+                    - 2187 / 6784 * e + 11 / 84 * f) for (
+                        a, b, c, d, e, f) in zip(
+                            y_n[-1], coef1, coef3, coef4, coef5, coef6)]
 
-                coef7 = self.func(
-                    x_n[-1] + mesh, y_temp)
+                coef7 = self.func(x_n[-1] + mesh, y_temp)
 
-                error = mesh * (
-                    71 / 57600 * coef1 - 71 / 16695 * coef3 + 71 / 1920
-                    * coef4 - 17253 / 339200 * coef5 + 22 / 525 * coef6
-                    - 1 / 40 * coef7)
-                error = abs(error)
+                error = [mesh * (
+                    71 / 57600 * a - 71 / 16695 * b + 71 / 1920
+                    * c - 17253 / 339200 * d + 22 / 525 * e
+                    - 1 / 40 * f) for (a, b, c, d, e, f) in zip(
+                        coef1, coef3, coef4, coef5, coef6, coef7)]
+                error = np.linalg.norm(np.array(error))
                 count += 1
 
             y_n.append(y_temp)
