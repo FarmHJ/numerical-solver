@@ -416,6 +416,7 @@ class AdaptiveMethod(object):
 
         y_n = [self.initial_value]
         x_n = [self.x_min]
+        errors = []
 
         # Initialise a temporary solution so that the error is
         # larger than given tolerance.
@@ -550,6 +551,12 @@ class AdaptiveMethod(object):
             while error > max(abs_tol, rel_tol * np.linalg.norm(
                     np.array(y_temp))):
 
+                # print('#############################')
+                # if abs_tol > (rel_tol* np.linalg.norm(np.array(y_temp))):
+                #     print('abs_tol')
+                # elif abs_tol < (rel_tol* np.linalg.norm(np.array(y_temp))):
+                #     print('rel_tol')
+
                 if count == 0:
                     mesh = self.initial_mesh
                 else:
@@ -607,7 +614,6 @@ class AdaptiveMethod(object):
                         coef1, coef3, coef4, coef5, coef6, coef7)]
                 error = np.linalg.norm(np.array(error))
                 count += 1
-                print(count)
 
             y_n.append(y_temp)
             x_n.append(x_n[-1] + mesh)
