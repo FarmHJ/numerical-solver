@@ -131,3 +131,13 @@ dmypy.json
 # VSCode config
 .vscode
 .DS_Store
+
+# Latex files
+*.fdb_latexmk
+*.aux
+*.fls
+*.lof
+*.log
+*.pdf
+*.synctex.gz
+*.toc
