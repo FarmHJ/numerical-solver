@@ -138,6 +138,6 @@ dmypy.json
 *.fls
 *.lof
 *.log
-*.pdf
+*.out
 *.synctex.gz
 *.toc
