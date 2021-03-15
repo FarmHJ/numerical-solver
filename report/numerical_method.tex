@@ -169,4 +169,11 @@ When these methods are tested on the example model \ref{eqn:example_model}, the 
 \includegraphics[width=0.95\columnwidth]{Eulerimplicit_trapezium_error_behaviour}
 
 \section{Predictor-corrector methods}
-For the implicit methods, numerical value at previous mesh point is chosen as the initial value for the fixed point iteration algorithm. The predictor-corrector method suggests a more carefully chosen initial guess for the implicit methods. An explicit numerical method is used as a predictor of the initial value of an implicit method. The initial value is then used as an initial guess for iterations to solve an implicit function. The implicit method that refines the solution is known as the corrector method. The Euler-Trapezoidal method is a predictor-corrector that uses an Euler's explicit method as the predictor and trapezium rule method as the corrector. In this implementation, the trapezium rule method corrector is iterated until a set of conditions are satisfied. The conditions are defined to be the difference between current iteration and previous iteration is lesser than a given threshold value or the number of iterations exceeds a certain amount.  
+For the implicit methods, numerical value at previous mesh point is chosen as the initial value for the fixed point iteration algorithm. The predictor-corrector method suggests a more carefully chosen initial guess for the implicit methods. An explicit numerical method is used as a predictor of the initial value of an implicit method. The initial value is then used as an initial guess for iterations to solve an implicit function. The implicit method that refines the solution is known as the corrector method. 
+
+The Euler-Trapezoidal method is a predictor-corrector that uses an Euler's explicit method as the predictor and trapezium rule method as the corrector. In this implementation, the trapezium rule method corrector is iterated until a set of conditions are satisfied. The conditions are defined to be the difference between current iteration and previous iteration is lesser than a given threshold value or the number of iterations exceeds a certain amount. 
+
+% Include graphs here
+
+\section{Adaptive method}
+In some types of problem or model, the solution to the problem exhibits a behaviour such that 
