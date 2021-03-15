@@ -416,7 +416,6 @@ class AdaptiveMethod(object):
 
         y_n = [self.initial_value]
         x_n = [self.x_min]
-        errors = []
 
         # Initialise a temporary solution so that the error is
         # larger than given tolerance.
