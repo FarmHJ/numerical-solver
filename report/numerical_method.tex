@@ -164,7 +164,7 @@ for n in range(1, self.mesh_points + 1):
 return x_n, y_n
 \end{lstlisting}
 
-When these methods are tested on the example model \ref{eqn:example_model}, the truncation error does not behave as expected. This is probably due to the use of fixed point iteration algorithm to estimate the solution of implicit functions. The error graph is shown below.
+When these methods are tested on the example model \ref{eqn:example_model}, the truncation error does not behave as expected. This is probably due to the use of fixed point iteration algorithm to estimate the solution of implicit functions. The error graph is shown below. Moreover, the error of the fixed point iteration algorithm is added to the error of the numerical method. Therefore, the difference of the numerical solution with the exact solution is larger for implicit methods as compared to Euler's explicit methods.
 
 \includegraphics[width=0.95\columnwidth]{Eulerimplicit_trapezium_error_behaviour}
 
@@ -176,4 +176,14 @@ The Euler-Trapezoidal method is a predictor-corrector that uses an Euler's expli
 % Include graphs here
 
 \section{Adaptive method}
-In some types of problem or model, the solution to the problem exhibits a behaviour such that 
+In some types of problem or model, the solution to the problem exhibits a behaviour where step sizes have to be sufficiently small for a stable solution. In other words, as the mesh point varies, the solution have small changes. Such problems are called stiff problems. In order to obtain a stable solution, the computational cost is high. Moreover, such stable solution would have resolutions higher than required for practical purposes.
+
+The adaptive method focus on the achieving desired accuracy with low computational cost. The main idea of an adaptive method is to control the precision at each mesh point. The truncation error at each mesh point is estimated. If the truncation error is larger than a threshold value, a smaller step size is chosen. These steps are repeated until the truncation error is smaller than the given threshold value.
+
+The adaptive method implemented in this software is based on the BS23 (Bogacki and Shampine) and RK45 (Runge-Kutta-Fehlberg) method. 
+
+% More details of the algorithm
+
+Absolute tolerance and relative tolerance were used in the implementation of the adaptive methods. Therefore two comparisons were made, one based on absolute tolerance and the other on relative tolerance. Similarly, the implemented adaptive method is used to solve the example model \ref{eqn:example_model}. The adaptive methods were tested for convergence. As shown in the graph below, the error of the method is smaller for smaller tolerance, regardless of absolute tolerance or relative tolerance.
+
+% Include graphs
