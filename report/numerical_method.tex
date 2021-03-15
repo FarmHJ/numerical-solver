@@ -62,10 +62,6 @@ for n in range(1, self.mesh_points + 1):
 return x_n, y_n
 \end{lstlisting}
 
-inserting the analytical solution y(x) into the numerical method and dividing by the mesh
-size is referred to as the consistency erro
-The truncation error is obtained by the Taylor's expansion
-
 The truncation error is defined to be the difference of exact solution with the numerical solution given the exact solution of previous mesh point is known. Therefore, we have that the truncation error for Euler's explicti method to be
 
 \begin{equation}
@@ -83,10 +79,13 @@ for $\xi_n \in (x_n, x_{n+1})$. Substitute this to the truncation error, we get
 
 Therefore, the truncation error for Euler's explicit method varies linearly with the step size.
 
-In this report, we will use an example model $y'(x) = f(x,y) = -y$ to show that the implementation follow the theory.
+In this report, we will use an example model $y'(x) = f(x,y) = -y$ to show that the implementation follows the theory.
 
 Some examples of the solution to the given model can be found here: \href{https://nbviewer.jupyter.org/github/FarmHJ/numerical-solver/blob/issue-11-fhn-notebook/examples/solver_convergence.ipynb}{\hl{Example model notebook}}
 
 Result image extracted from the notebook above shows that the truncation error follows 
 
 \includegraphics{Euler_explicit_error_behaviour}
+
+Other than the Euler's explicit method, the other one-step methods implemented are the Euler's implicit method, trapezium rule method and four-stage explicit Runge-Kutta method.
+
