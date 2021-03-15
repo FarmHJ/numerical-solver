@@ -550,6 +550,12 @@ class AdaptiveMethod(object):
             while error > max(abs_tol, rel_tol * np.linalg.norm(
                     np.array(y_temp))):
 
+                # print('#############################')
+                # if abs_tol > (rel_tol* np.linalg.norm(np.array(y_temp))):
+                #     print('abs_tol')
+                # elif abs_tol < (rel_tol* np.linalg.norm(np.array(y_temp))):
+                #     print('rel_tol')
+
                 if count == 0:
                     mesh = self.initial_mesh
                 else:
