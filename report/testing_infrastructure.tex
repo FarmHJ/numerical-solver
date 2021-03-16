@@ -35,6 +35,29 @@ def test__init__(self):
         solver.OneStepMethods(
             func, x_min, x_max, 1, mesh_points)
 \end{lstlisting}
-. A simple model with analytical solution is first initialised. Required inputs were check to make sure the problem is set up properly, in line 14 and 15 of the code snippet above. To ensure that the inputs to the function are of the desired data type. 
+. A simple model with analytical solution is first initialised. Required inputs were check to make sure the problem is set up properly, in line 14 and 15 of the code snippet above. To ensure that the inputs to the function are of the desired data type, errors are raised whenever the user inputs a wrong data type. The unit testing also tests that these errors are raised appropriately (line 17 to 25) whenever the data type does not satisfy the requirements. 
 
-% Add description to test of error raised
+After checking that the problem is properly initialised, we then test that the numerical methods are working correctly. Take the adaptive method, BS23 algorithm, as an example, 
+\begin{lstlisting}[language=Python]
+def test_ode23(self):
+
+def func(x, y):
+    return [-y[0]]
+x_min = 0
+x_max = 1
+initial_value = [1]
+
+problem = solver.AdaptiveMethod(
+    func, x_min, x_max, initial_value, initial_mesh=0.5)
+mesh, soln = problem.ode23()
+
+# Test end point of mesh
+self.assertGreaterEqual(mesh[-1], 1.0)
+
+# Test mesh point
+self.assertAlmostEqual(mesh[1], 0.3483788976565)
+
+# Test solution at first stepsize
+self.assertAlmostEqual(soln[1][0], 0.7052580305097)
+\end{lstlisting}
+The method is first tested to execute the numerical computation up to the maximum mesh point indicated. Then the first adaptive mesh point and its solution, obtained from the software, matches the value computed manually. 
