@@ -1,0 +1,47 @@
+%---------------------------------------------------------------------------------
+\chapter{Example}
+\label{chap:fitzhugh-nagumo}
+%---------------------------------------------------------------------------------
+\section{Background}
+% reference from brugada symdrome essay and keener sneyd
+The human heart functions by pumping blood to the lungs and the rest of the body. Cardiac muscle cells contract in synchronization for heart to function. Ions flow into and out of cells, which creates a change in the electrical potential difference at the cell membrane and thus produce a cardiac action potential. The cardiac action potential then triggers the contraction of cardiac muscle cells. The action potential is first described by Hodgkin \& Huxley. 
+Their model were then simplified to the Fitzhugh-Nagumo model, retaining the fast-slow phase and excitability of the Hodgkin \& Huxley model. %\ref{cite:keener&sneyd}
+
+\section{Fitzhugh-Nagumo model}
+We will look into the Fitzhugh-Nagumo model in this assignment. The definition of the model is
+\begin{align}
+    \epsilon \frac{dv}{dt} &= f(v) - w + \mathbf{I}_{app} \\
+    \frac{dw}{dt} &= v - \gamma w
+\end{align}
+where $f(v) = v(1-v)(v-\alpha)$, $0 < \alpha < 1$, $\epsilon \ll 1$ and $\mathbf{I}_{app}$ is the applied current. The fast $v$ is the excitation variable, while the slow $w$ is the recovery variable.
+
+In this implementation, the parameters are chosen to be $\alpha = 0.1$, $\gamma = 0.5$, $\epsilon = 0.01$ and $\mathbf{I}_{app} = 0.026$, taking reference from %\ref{cite:appadu}
+The initial values are taken to be near the origin, that is $(v_0, w_0) = (0.01, 0.01)$. 
+
+The Fitzhugh-Nagumo is solved with various numerical methods in this \href{https://nbviewer.jupyter.org/github/FarmHJ/numerical-solver/blob/main/examples/fitzhugh_nagumo.ipynb}{Fitzhugh-Nagumo solution notebook}. 
+
+\includegraphics[width=0.95\columnwidth]{FHN_Euler_explicit_phase_plane}
+
+\begin{figure}
+    \includegraphics[width=0.95\columnwidth]{FHN_Euler_explicit_variable}
+    \label{fig:Euler_explicit_variable}
+\end{figure}
+
+
+ From the solution of each variable \ref{fig:Euler_explicit_variable}, we can see that $v$, the excitation variable is excited in the early stage. While $v$ increases significantly, the change in $w$ is small. After $v$ reaches its peak and starts to reduce, $w$ increases slowly. This can be observed in both phase plane and variable graph. When the variable $v$ starts to recover to its original value, $w$ is at its maximum. It can also be seen from the graphs, especially from the scattering of points in the phase plane, that the change in $v$ is rapid while the change in $w$ is slow. When the change in $v$ is significantly larger than the change in $w$, the points are sparse. On the other hand, the points are packed when $w$ increases or decreases more than $v$. However, in the adaptive methods, such insights cannot be interpreted directly from the phase plane. Therefore, green triangles were plotted in Fig. \ref{fig:adaptive_variable} to indicate the adapted mesh points. The mesh points are adapted towards large difference in $v$ or $w$ over a short period of time.
+
+ \includegraphics[width=0.95\columnwidth]{FHN_adaptive_phase_plane}
+
+ \begin{figure}
+    \includegraphics[width=0.95\columnwidth]{FHN_adaptive_variable}
+    \label{fig:adaptive_variable}
+ \end{figure}
+
+ \section{Convergence of Fitzhugh-Nagumo model}
+A \href{https://nbviewer.jupyter.org/github/FarmHJ/numerical-solver/blob/main/examples/fhn_model_convergence.ipynb}{notebook} is created to test the convergence of the solution to the Fitzhugh-Nagumo model. Since the model has no analytical solution, it is tested against a reference solution. The reference solutions are assumed to be sufficiently accurate. For methods with fixed step size, that are the one-step methods and predictor-corrector method, the reference solutions are constructed by using smaller step size. For methods with adaptive step size, reference solutions are obtained by using smaller tolerance value. This notebook shows the numerical solution computed for different methods at different step sizes or tolerance values. The numerical solutions are then compared with their respective reference solutions. In both methods, the error decreases as step size or tolerance decreases.
+
+\includegraphics[width=0.5\columnwidth]{FHN_Euler_explicit_error_behaviour}
+\begin{figure}
+   \includegraphics[width=0.5\columnwidth]{FHN_adaptive_error_behaviour}
+   \label{fig:adaptive_error}
+\end{figure}
