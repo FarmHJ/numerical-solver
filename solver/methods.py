@@ -86,7 +86,7 @@ class OneStepMethods(object):
 
         next_prediction = numerical_method(prediction)
         iteration_counts = 0
-        threshold = 1e-5
+        threshold = 0.001
 
         # Approximate solution with fixed point iteration.
         while np.linalg.norm(
