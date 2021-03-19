@@ -2,7 +2,10 @@
 \chapter{Numerical methods}
 \label{chap:numerical-methods}
 %---------------------------------------------------------------------------------
-In real world problems, ODE systems are frequently used. A general form of an initial value problem is as follows: 
+Ordinary Differential Equation (ODE) 
+%introduction
+
+ODE systems are frequently used. A general form of an initial value problem is as follows: 
 \begin{align}
     y'&=f(x,y)\\
     y(x_0) &= y_0
@@ -20,16 +23,15 @@ Throughout the report, the following notation will be used:
     x_n &= x_0 + nh\\
     h &= \frac{(X_M - x_0)}{N}
 \end{align}
-
 for $n = 0,\dots, N$.
 
 However, in general, these models cannot be solved analytically. Therefore, the solution has to be estimated by numerical methods. The most popular and simple method is the Euler's method.
 
-Intuitively, the Euler's explicit method tries to estimate the value at the next step following the gradient of the solution at current point.
+Intuitively, Euler's explicit method tries to estimate the value at the next step following the gradient of the solution at current point.
 
 \section{One-step methods}
 \label{sec:one-step-method}
-The Euler's explicit method has the following definition,  
+Euler's explicit method has the following definition,  
 \begin{equation}
     y_{n+1} = y_n + hf(x_n,y_n)\\
 \end{equation}
@@ -51,7 +53,7 @@ return x_n, y_n
 
 A vector of numerical solution and a vector of mesh points are initialised with their respective initial values. At each iteration, the mesh point and the numerical solution at the mesh point are calculated. The series of mesh points and its solution are returned.
 
-The truncation error of the Euler's explicit method is defined to be the difference of exact solution with the numerical solution given the exact solution of previous mesh point is known. Therefore, we have that the truncation error for Euler's explicit method to be
+The truncation error of the Euler's explicit method is defined to be the difference between the exact solution and the numerical solution given the exact solution of previous mesh point is known. Therefore, we have that the truncation error for Euler's explicit method is
 
 \begin{equation}
 \label{eqn:trun_err_def}
@@ -59,9 +61,10 @@ The truncation error of the Euler's explicit method is defined to be the differe
 \end{equation}
 According to Taylor's series expansion, we have 
 \begin{equation}
+\label{eqn:Taylor_expansion}
     y(x_n + h) = y(x_n) + hy'(x_n) + \frac{1}{2}hy''(\xi_n)
 \end{equation}
-for $\xi_n \in (x_n, x_{n+1})$. Substitute this to the truncation error, noting that $f(x_n, y(x_n)) = y'(x_n)$, we get
+for some $\xi_n \in (x_n, x_{n+1})$. Substitute \ref{eqn:Taylor_expansion} to \ref{eqn:trun_err_def}, noting that $f(x_n, y(x_n)) = y'(x_n)$, we get
 \begin{equation}
     T_n = \frac{1}{2}hy''(\xi_n)
 \end{equation}
@@ -83,7 +86,7 @@ According to the computation of the software, the truncation error graph is show
     \label{fig:Euler_explicit_error_behaviour}
 \end{figure}
 
-Other than the Euler's explicit method, the other one-step methods implemented are the Euler's implicit method, trapezium rule method and four-stage explicit Runge-Kutta method. The Euler's implicit method is defined to be
+Other than Euler's explicit method, the other one-step methods implemented are Euler's implicit method, the trapezium rule method and the four-stage explicit Runge-Kutta method. The Euler's implicit method is defined to be
 \begin{equation}
     y_{n+1} = y_n + hf(x_{n+1},y_{n+1}),\\
 \end{equation}
