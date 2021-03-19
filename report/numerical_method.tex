@@ -9,10 +9,12 @@ In real world problems, ODE systems are frequently used. A general form of an in
 \end{align}
 for $x \in [x_0, X_M]$. \\
 
-Throughout the report, the following notation will be used. \\
-$y_n$ - numerical approximation of $y(x_n)$ \\
-$y(x_n)$ - analytical solution at mesh point $x_n$ \\
-$x_n$ - mesh points of defined range, where
+Throughout the report, the following notation will be used:
+\begin{itemize}
+    \item $y_n$ - numerical approximation of $y(x_n)$
+    \item $y(x_n)$ - analytical solution at mesh point $x_n$
+    \item $x_n$ - mesh points of defined range, where
+\end{itemize}
 
 \begin{align}
     x_n &= x_0 + nh\\
@@ -26,6 +28,7 @@ However, in general, these models cannot be solved analytically. Therefore, the 
 Intuitively, the Euler's explicit method tries to estimate the value at the next step following the gradient of the solution at current point.
 
 \section{One-step methods}
+\label{sec:one-step-method}
 The Euler's explicit method has the following definition,  
 \begin{equation}
     y_{n+1} = y_n + hf(x_n,y_n)\\
@@ -33,7 +36,7 @@ The Euler's explicit method has the following definition,
 Starting from the initial value, the solution at the subsequent mesh point is estimated to follow a straight line with gradient as given.
 
 The implementation is as follows:
-\begin{lstlisting}[language=Python]
+\begin{lstlisting}[language=Python, caption= {Euler's explicit method}, title={Euler's explicit method}, label=Euler_explicit_code]
 y_n = [self.initial_value]
 x_n = [self.x_min]
 
@@ -74,7 +77,11 @@ for $x \in [0, 5]$ is used throughout the report to check that the implementatio
 
 According to the computation of the software, the truncation error graph is shown below. It is observed that $\log |T_n|$ increases linearly with $\log h$, same as the theoretical prediction. 
 
-\includegraphics[width=0.95\columnwidth]{Euler_explicit_error_behaviour}
+\begin{figure}
+    \includegraphics[width=0.95\columnwidth]{Euler_explicit_error_behaviour}
+    \caption{Truncation error of Euler's explicit method for various step sizes.}
+    \label{fig:Euler_explicit_error_behaviour}
+\end{figure}
 
 Other than the Euler's explicit method, the other one-step methods implemented are the Euler's implicit method, trapezium rule method and four-stage explicit Runge-Kutta method. The Euler's implicit method is defined to be
 \begin{equation}
@@ -88,24 +95,42 @@ Using the same definition for truncation error in \ref{eqn:trun_err_def}, we hav
 
 When these methods are tested on the example model \ref{eqn:example_model}, the truncation error does not behave as expected, as shown in the graph below. This is probably due to the use of fixed point iteration algorithm to estimate the solution of implicit functions. The error of the fixed point iteration algorithm might be added to the error of the numerical method. Therefore, the difference of the numerical solution with the exact solution is larger for implicit methods as compared to Euler's explicit methods.
 
-\includegraphics[width=0.95\columnwidth]{Eulerimplicit_trapezium_error_behaviour}
+\begin{figure}
+    \includegraphics[width=0.95\columnwidth]{Eulerimplicit_trapezium_error_behaviour}
+    \caption{Truncation error of Euler's implicit method and trapezium rule method for various step sizes.}
+    \label{fig:Eulerimplicit_trapezium_error_behaviour}
+\end{figure}
 
 \section{Predictor-corrector methods}
+\label{sec:predictor-corrector}
 For the implicit one-step methods, numerical value at previous mesh point is chosen as the initial guess for the fixed point iteration algorithm. The predictor-corrector method suggests a more carefully chosen initial guess for the implicit methods. An explicit numerical method is used as a predictor for the initial guess of an implicit method. The initial value is then used for the iterations in the algorithm to solve an implicit function. The implicit method that refines the solution is known as the corrector method. 
 
 The Euler-Trapezoidal method is a predictor-corrector that uses an Euler's explicit method as the predictor and trapezium rule method as the corrector. In this implementation, the trapezium rule method corrector is iterated until a set of conditions are satisfied. The conditions are set to be the difference between current iteration and previous iteration is lesser than a given threshold value or the number of iterations exceeds a certain amount. The figure below shows the graph of $\log |T_n|$ against $\log h$.
 
-\includegraphics[width=0.5\columnwidth]{predictor_corrector_error_behaviour}
+\begin{figure}
+    \includegraphics[width=0.95\columnwidth]{predictor_corrector_error_behaviour}
+    \caption{Error of Euler-Trapezoidal method for various step sizes.}
+    \label{fig:predictor_corrector_error_behaviour}
+\end{figure}
 
 \section{Adaptive method}
+\label{sec:adaptive-method}
 In some types of problem, the solution to the problem exhibits a behaviour where step sizes have to be sufficiently small for a stable solution. In other words, the solution have small changes with mesh points. Such problems are called stiff problems. In order to obtain a stable solution, the computational cost is high. Moreover, such stable solution would have resolutions higher than required for practical purposes.
 
 The adaptive method focus on the achieving desired accuracy with low computational cost. The main idea of an adaptive method is to control the precision at each mesh point. The error at each mesh point is estimated. If the error is larger than a threshold value, a smaller step size is chosen. These steps are repeated until the error is smaller than the given threshold value.
 
-The adaptive method implemented in this software is based on the BS23 (Bogacki and Shampine) and RK45 (Runge-Kutta-Fehlberg) method. A lower order method is used to estimate the solution, while a higher order method is used to estimate the error. 
+The adaptive method implemented in this software is based on the BS23 (Bogacki and Shampine) and RKF45 (Runge-Kutta-Fehlberg) method. A lower order method is used to estimate the solution, while a higher order method is used to estimate the error. 
 
 Absolute tolerance and relative tolerance were used in the implementation of the adaptive methods. Similarly, the implemented adaptive method is used to solve the example model \ref{eqn:example_model}. The adaptive methods were tested for convergence. Two comparisons were made, one based on absolute tolerance and the other on relative tolerance. As shown in the graph below, the error of the method is smaller for smaller tolerance, regardless of absolute tolerance or relative tolerance.
 
-\includegraphics[width=0.5\columnwidth]{ode45_absolute_sum_error_behaviour.JPG}
+\begin{figure}
+    \includegraphics[width=0.95\columnwidth]{ode45_absolute_sum_error_behaviour}
+    \caption{Total error of RKF45 method for various absolute tolerance.}
+    \label{fig:ode45_absolute_sum_error_behaviour}
+\end{figure}
 
-\includegraphics[width=0.5\columnwidth]{ode45_relative_sum_error_behaviour.JPG}
+\begin{figure}
+    \includegraphics[width=0.95\columnwidth]{ode45_relative_sum_error_behaviour}
+    \caption{Total error of RKF45 method for various relative tolerance.}
+    \label{fig:ode45_relative_sum_error_behaviour}
+\end{figure}

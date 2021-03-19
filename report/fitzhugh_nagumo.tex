@@ -3,10 +3,12 @@
 \label{chap:fitzhugh-nagumo}
 %---------------------------------------------------------------------------------
 \section{Background}
+\label{sec:background}
 % reference from brugada symdrome essay and keener sneyd
 We will look into the Fitzhugh-Nagumo model in this assignment. The Fitzhugh-Nagumo model is a model that describes an excitable system, such as the action potential of cardiac cells. The action potential is first described by Hodgkin \& Huxley. Their model were then simplified to the Fitzhugh-Nagumo model, retaining the fast-slow phase and excitability of the Hodgkin \& Huxley model. %\ref{cite:keener&sneyd}
 
 \section{Fitzhugh-Nagumo model}
+\label{sec:FHN}
 The definition of the Fitzhugh-Nagumo model is
 \begin{align}
     \epsilon \frac{dv}{dt} &= f(v) - w + \mathbf{I}_{app} \\
@@ -21,13 +23,13 @@ The Fitzhugh-Nagumo is solved with various numerical methods in this \href{https
 
 \begin{figure}
     \includegraphics[width=0.95\columnwidth]{FHN_Euler_explicit_phase_plane}
-    \caption{Phase plane of $v$ and $w$}
+    \caption{Phase plane of $v$ and $w$ by Euler's explicit method.}
     \label{fig:Euler_explicit_phase_plane}
 \end{figure}
 
 \begin{figure}
     \includegraphics[width=0.95\columnwidth]{FHN_Euler_explicit_variable}
-    \caption{Graph of $v$ and $w$ against time}
+    \caption{Graph of $v$ and $w$ against time by Euler's explicit method.}
     \label{fig:Euler_explicit_variable}
 \end{figure}
 
@@ -36,26 +38,27 @@ From the figure \ref{fig:Euler_explicit_variable}, we can see that $v$, the exci
 
 \begin{figure}
     \includegraphics[width=0.95\columnwidth]{FHN_adaptive_phase_plane}
-    \caption{Phase plane of $v$ and $w$ for adaptive method}
+    \caption{Phase plane of $v$ and $w$ for adaptive method BS23.}
     \label{fig:adaptive_phase_plane}
 \end{figure}
 
 \begin{figure}
     \includegraphics[width=0.95\columnwidth]{FHN_adaptive_variable}
-    \caption{Graph of $v$ and $w$ against time for adaptive method}
+    \caption{Graph of $v$ and $w$ against time for adaptive method BS23}
     \label{fig:adaptive_variable}
 \end{figure}
 
 \section{Convergence of Fitzhugh-Nagumo model}
+\label{sec:FHN-convergence}
 A \href{https://nbviewer.jupyter.org/github/FarmHJ/numerical-solver/blob/main/examples/fhn_model_convergence.ipynb}{notebook} is created to test the convergence of the solution to the Fitzhugh-Nagumo model. Since the model has no analytical solution, it is tested against a reference solution. The reference solutions are assumed to be sufficiently accurate. For methods with fixed step size, which are the one-step methods and predictor-corrector method, the reference solutions are constructed by using smaller step size. For methods with adaptive step size, reference solutions are obtained by using smaller tolerance value. This notebook shows the numerical solution computed for different methods at different step sizes or tolerance values. The numerical solutions are then compared with their respective reference solutions. In both methods, the error decreases as step size or tolerance decreases.
 
 \begin{figure}
-    \includegraphics[width=0.5\columnwidth]{FHN_Euler_explicit_error_behaviour}
-    \caption{Error at a mesh point for Euler's explicit method}
+    \includegraphics[width=0.95\columnwidth]{FHN_Euler_explicit_error_behaviour}
+    \caption{Error at a mesh point for Euler's explicit method.}
     \label{fig:Euler_explicit_error}
  \end{figure}
 \begin{figure}
-   \includegraphics[width=0.5\columnwidth]{FHN_adaptive_error_behaviour}
-   \caption{Sum of error for adaptive method}
+   \includegraphics[width=0.95\columnwidth]{FHN_adaptive_error_behaviour}
+   \caption{Sum of error for adaptive method BS23.}
    \label{fig:adaptive_error}
 \end{figure}
