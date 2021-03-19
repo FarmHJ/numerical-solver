@@ -131,8 +131,6 @@ def doctest_rst_and_public_interface():
     # list.
     solver_submodules = [
         'solver.methods',
-        'solver.models',
-        'solver.simulation',
         'solver.version_info'
     ]
 
