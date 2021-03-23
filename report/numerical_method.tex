@@ -53,7 +53,7 @@ return x_n, y_n
 
 A vector of numerical solution and a vector of mesh points are initialised with their respective initial values. At each iteration, the mesh point and the numerical solution at the mesh point are calculated. The series of mesh points and its solution are returned.
 
-The truncation error of the Euler's explicit method is defined to be the difference between the exact solution and the numerical solution given the exact solution of previous mesh point is known. Therefore, we have that the truncation error for Euler's explicit method is
+The truncation error of Euler's explicit method is defined to be the difference between the exact solution and the numerical solution given the exact solution of previous mesh point is known. Therefore, we have that the truncation error for Euler's explicit method is
 
 \begin{equation}
 \label{eqn:trun_err_def}
@@ -124,7 +124,7 @@ The adaptive method focus on the achieving desired accuracy with low computation
 
 The adaptive method implemented in this software is based on the BS23 (Bogacki and Shampine) and RKF45 (Runge-Kutta-Fehlberg) method. A lower order method is used to estimate the solution, while a higher order method is used to estimate the error. 
 
-Absolute tolerance and relative tolerance were used in the implementation of the adaptive methods. Similarly, the implemented adaptive method is used to solve the example model \ref{eqn:example_model}. The adaptive methods were tested for convergence. Two comparisons were made, one based on absolute tolerance and the other on relative tolerance. As shown in the graph below, the error of the method is smaller for smaller tolerance, regardless of absolute tolerance or relative tolerance.
+Absolute tolerance and relative tolerance were used in the implementation of the adaptive methods. Similarly, the implemented adaptive method is used to solve the example model \ref{eqn:example_model}. The adaptive methods were tested for convergence. Two comparisons were made, one based on absolute tolerance and the other on relative tolerance. As shown in Figures \ref{fig:ode45_absolute_sum_error_behaviour} and \ref{fig:ode45_relative_sum_error_behaviour}, the error of the method is smaller for smaller tolerance, regardless of absolute tolerance or relative tolerance.
 
 \begin{figure}
     \includegraphics[width=0.95\columnwidth]{ode45_absolute_sum_error_behaviour}
