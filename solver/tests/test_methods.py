@@ -82,7 +82,8 @@ class TestOneStepMethods(unittest.TestCase):
         def method(value):
             return [0.1 * i + 1.1 for i in func(0, value)]
 
-        y_pred = problem.fixed_pt_iteration(initial_value, method)
+        y_pred = problem.fixed_pt_iteration(
+            initial_value, method, tol=0.001, iteration_counts=1000)
 
         # Test fixed point iteration results
         self.assertAlmostEqual(y_pred, [1])
@@ -110,7 +111,7 @@ class TestOneStepMethods(unittest.TestCase):
 
         problem = solver.OneStepMethods(
             func, x_min, x_max, initial_value, mesh_points)
-        mesh, soln = problem.Euler_implicit()
+        mesh, soln = problem.Euler_implicit(tol=0.001, iteration_counts=1000)
 
         # Test shape of output: mesh and solution
         self.assertEqual(np.shape(mesh), (11,))
@@ -155,7 +156,7 @@ class TestOneStepMethods(unittest.TestCase):
 
         problem = solver.OneStepMethods(
             func, x_min, x_max, initial_value, mesh_points)
-        mesh, soln = problem.trapezium_rule()
+        mesh, soln = problem.trapezium_rule(tol=0.001, iteration_counts=1000)
 
         # Test shape of output: mesh and solution
         self.assertEqual(np.shape(mesh), (11,))
@@ -207,7 +208,7 @@ class TestPredictorCorrector(unittest.TestCase):
         problem = solver.PredictorCorrector(
             func, x_min, x_max, initial_value, mesh_points)
 
-        _, soln = problem.Euler_trapezium()
+        _, soln = problem.Euler_trapezium(tol=0.001, iteration_counts=1000)
 
         # Test solution at first stepsize
         self.assertEqual(soln[1][0], 1.10525)
