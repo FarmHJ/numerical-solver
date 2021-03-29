@@ -1,6 +1,7 @@
 \documentclass[11pt,a4paper]{report}
 
 %load any additional packages
+\usepackage[ruled,vlined]{algorithm2e}
 \usepackage{amssymb}
 \usepackage{amsmath}
 \usepackage{color, soul}
@@ -55,14 +56,11 @@
 \setcounter{tocdepth}{3}
 
 
-\maketitle                  % create a title page from the preamble info
-% \include{abstract}          % include the abstract
+\maketitle
+\tableofcontents
+% \listoffigures
 
-\tableofcontents            % generate and include a table of contents
-% \listoffigures              % generate and include a list of figures
-
-
-%now include the files of latex for each of the chapters etc
+%include the files of latex for each of the chapters
 \include{numerical_method}
 \include{code_implementation}
 \include{fitzhugh_nagumo}
@@ -71,7 +69,7 @@
 %now enable appendix numbering format and include any appendices
 % \appendix
 % \include{appendix1}
-% \include{appendix2}
+% appendix 1 could be list of links to notebooks
 
 %next line adds the Bibliography to the contents page
 % \addcontentsline{toc}{chapter}{Bibliography}
