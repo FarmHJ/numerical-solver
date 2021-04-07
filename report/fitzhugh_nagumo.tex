@@ -4,23 +4,24 @@
 %---------------------------------------------------------------------------------
 \section{Background}
 \label{sec:background}
-% reference from brugada symdrome essay and keener sneyd
-% Explain why this is relevant to your DPhil
-We will look into the Fitzhugh-Nagumo model in this assignment. The Fitzhugh-Nagumo model is a model that describes an excitable system, such as the action potential of cardiac cells. The action potential is first described by Hodgkin \& Huxley. Their model were then simplified to the Fitzhugh-Nagumo model, retaining the fast-slow phase and excitability of the Hodgkin \& Huxley model. %\ref{cite:keener&sneyd}
+We will look into Fitzhugh-Nagumo model in this assignment.  Fitzhugh-Nagumo model describes an excitable system, such as the action potential of cardiac cells. The action potential is first described by Hodgkin \& Huxley. Their model were then simplified to Fitzhugh-Nagumo model, retaining the fast-slow phase and the excitability of Hodgkin \& Huxley model. \cite{Keener2009}
+
+This model is relevant to my D.Phil. project as my project will be related to action potential of cardiac muscle cells, an excitable system. I will be working on sodium channels of cardiac muscle cells. The flow of sodium ions across the cell membrane affects the cell's action potential. Moreover, Fitzhugh-Nagumo model captures all the important features of an action potential, the excitability and the fast-slow phase. Therefore, it is a good simple model to start with.
 
 \section{Fitzhugh-Nagumo model}
 \label{sec:FHN}
-The definition of the Fitzhugh-Nagumo model is
+The definition of Fitzhugh-Nagumo model is
 \begin{align}
-    \epsilon \frac{dv}{dt} &= f(v) - w + \mathbf{I}_{app} \\
+\label{eqn:FHN}
+    \epsilon \frac{dv}{dt} &= f(v) - w + I_{app} \\
     \frac{dw}{dt} &= v - \gamma w
 \end{align}
-where $f(v) = v(1-v)(v-\alpha)$, $0 < \alpha < 1$, $\epsilon \ll 1$ and $\mathbf{I}_{app}$ is the applied current. The fast $v$ is the excitation variable, while the slow $w$ is the recovery variable.
+where $f(v) = v(1-v)(v-\alpha)$, $0 < \alpha < 1$, $\epsilon \ll 1$ and $I_{app}$ is the applied current. The fast $v$ is the excitation variable, while the slow $w$ is the recovery variable.
 
-In this implementation, the parameters are chosen to be $\alpha = 0.1$, $\gamma = 0.5$, $\epsilon = 0.01$ and $\mathbf{I}_{app} = 0.026$, taking reference from %\ref{cite:appadu}.
-The initial values are taken to be near the origin, that are $(v_0, w_0) = (0.01, 0.01)$. 
+In this implementation, the parameters are chosen to be $\alpha = 0.1$, $\gamma = 0.5$, $\epsilon = 0.01$ and $I_{app} = 0.026$, taking reference from \cite{Chapwanya2018}.
+The initial values are taken to be near the origin, that are $(v_0, w_0) = (0.01, 0.01)$. The model is solved for $t$ from 0 to 1.
 
-The Fitzhugh-Nagumo is solved with various numerical methods in a notebook at the link:  \href{https://nbviewer.jupyter.org/github/FarmHJ/numerical-solver/blob/main/examples/fitzhugh_nagumo.ipynb}{\underline{\emph{Fitzhugh-Nagumo model notebook}}}. 
+Fitzhugh-Nagumo model is solved with various numerical methods in a notebook at the link:  \href{https://nbviewer.jupyter.org/github/FarmHJ/numerical-solver/blob/main/examples/fitzhugh_nagumo.ipynb}{\underline{\emph{Fitzhugh-Nagumo model notebook}}}. 
 
 \begin{figure}
     \includegraphics[width=0.95\columnwidth]{FHN_Euler_explicit_phase_plane}
@@ -35,7 +36,7 @@ The Fitzhugh-Nagumo is solved with various numerical methods in a notebook at th
 \end{figure}
 
 
-From Figure \ref{fig:Euler_explicit_variable}, we can see that $v$, the excitation variable is excited in the early stage. While $v$ increases significantly, the change in $w$ is small. After $v$ reaches its peak and starts to reduce, $w$ increases slowly. This can be observed in both the phase plane (Fig. \ref{fig:Euler_explicit_phase_plane}) and the variable graph (Fig. \ref{fig:Euler_explicit_variable}). When the variable $v$ starts to recover to its original value, $w$ is at its maximum. The scattering of points in the phase plane captures the feature of the model, where the change in $v$ is rapid while the change in $w$ is slow. When the change in $v$ is significantly larger than the change in $w$, the points are sparse. On the other hand, the points are packed when $w$ increases or decreases more than $v$. However, in the adaptive methods, such insights cannot be interpreted directly from the phase plane. Therefore, green triangles were plotted in Fig. \ref{fig:adaptive_variable} to indicate the adapted mesh points. The mesh points are adapted towards large difference in $v$ or $w$ over a short period of time.
+From Figure \ref{fig:Euler_explicit_variable}, we can see that $v$, the excitation variable is excited in the early stage. While $v$ increases significantly, the change in $w$ is small. After $v$ reaches its peak and starts to reduce, $w$ increases slowly. This can be observed in both the phase plane (Figure \ref{fig:Euler_explicit_phase_plane}) and the variable graph (Figure \ref{fig:Euler_explicit_variable}). When the variable $v$ starts to recover to its original value, $w$ is at its maximum. The scattering of points in the phase plane captures the feature of the model, where the change in $v$ is rapid while the change in $w$ is slow. When the change in $v$ is significantly larger than the change in $w$, the points are sparse. On the other hand, the points are packed when $w$ increases or decreases more than $v$. However, in the adaptive methods, such insights cannot be interpreted directly from the phase plane. Therefore, green triangles were plotted in Figure \ref{fig:adaptive_variable} to indicate the adapted mesh points. The mesh points are adapted towards large difference in $v$ or $w$ over a short period of time.
 
 \begin{figure}
     \includegraphics[width=0.95\columnwidth]{FHN_adaptive_phase_plane}
@@ -51,15 +52,15 @@ From Figure \ref{fig:Euler_explicit_variable}, we can see that $v$, the excitati
 
 \section{Convergence of Fitzhugh-Nagumo model}
 \label{sec:FHN-convergence}
-A notebook (access from the link: \href{https://nbviewer.jupyter.org/github/FarmHJ/numerical-solver/blob/main/examples/fhn_model_convergence.ipynb}{\underline{\emph{Fitzhugh-Nagumo convergence notebook}}} is created to test the convergence of the solution to the Fitzhugh-Nagumo model. Since the model has no analytical solution, it is tested against a reference solution. The reference solutions are assumed to be sufficiently accurate. For methods with fixed step size, which are the one-step methods and predictor-corrector method, the reference solutions are constructed by using a smaller step size. For methods with adaptive step size, reference solutions are obtained by using a smaller tolerance value. This notebook shows the numerical solution computed for different methods at different step sizes or tolerance values. The numerical solutions are then compared with their respective reference solutions. In both methods, the error decreases as step size or tolerance decreases.
+A notebook (access from the link: \href{https://nbviewer.jupyter.org/github/FarmHJ/numerical-solver/blob/main/examples/fhn_model_convergence.ipynb}{\underline{\emph{Fitzhugh-Nagumo convergence notebook}}} is created to test the convergence of the solution to the Fitzhugh-Nagumo model. Since the model has no analytical solution, it is tested against a reference solution. The reference solutions are assumed to be sufficiently accurate. For methods with fixed step size, which are the one-step methods and predictor-corrector method, the reference solutions are constructed by using a small step size of $1^{-7}$. For methods with adaptive step size, reference solutions are obtained by using a small tolerance value of $1^{-15}$. This notebook shows the numerical solution computed for different methods at different step sizes or tolerance values. The numerical solutions are then compared with their respective reference solutions. In both methods, the error decreases as step size or tolerance decreases, as shown in Figure \ref{fig:Euler_explicit_error} and Figure \ref{fig:adaptive_error}.
 
 \begin{figure}
     \includegraphics[width=0.95\columnwidth]{FHN_Euler_explicit_error_behaviour}
-    \caption{Error at a mesh point for Euler's explicit method.}
+    \caption{Error at a mesh point for Euler's explicit method. The Fitzhugh-Nagumo model Eqs.~\eqref{eqn:FHN} is solved with Euler's explicit method at different step sizes. The error is the absolute difference between reference solution and numerical solution at $x=0.7$. The reference solution is taken at step size of $1^{-7}$. Note that $\log(1^{-8})\simeq-16.118$.}
     \label{fig:Euler_explicit_error}
  \end{figure}
 \begin{figure}
    \includegraphics[width=0.95\columnwidth]{FHN_adaptive_error_behaviour}
-   \caption{Sum of error for adaptive method BS23.}
+   \caption{Sum of error for adaptive method BS23. The Fitzhugh-Nagumo model Eqs.~\eqref{eqn:FHN} is solved with BS23 method at different absolute tolerance values. The relative tolerance is fixed at $1^{-15}$. The error is the sum of absolute difference between reference solution and numerical solution at all mesh points. The reference solution is taken at relative tolerance of $1^{-8}$. Note that $\log(1^{-8})\simeq-18.421$.}
    \label{fig:adaptive_error}
 \end{figure}

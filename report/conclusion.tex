@@ -1,11 +1,14 @@
-%---------------------------------------------------------------------------------
+%-----------------------------------------------------------------------
 \chapter{Conclusion}
 \label{chap:conclusion}
-%---------------------------------------------------------------------------------
+%-----------------------------------------------------------------------
 
 % Summary of contents
-% numerical methods and its convergence
-% implementation on an example
-% software engineering
+One-step methods including Euler's explicit method, Euler's implicit method, trapezium rule method and four-stage Runge-Kutta method were implemented in the software. Other than one-step methods, a predictor-corrector method and two adaptive methods were implemented. The examples in the notebooks provided in Appendix~\ref{chap:link} show that the numerical methods converge for the example model Eqs.~\eqref{eqn:example_model}-\eqref{eqn:example-end}. Moreover, the order of accuracy of the one-step methods computed from the example model Eqs.~\ref{eqn:example_model}-\eqref{eqn:example-end} match the theoretical order of accuracy. While there are no order of accuracy for the adaptive methods, the accuracy of the method increases with the decrease in tolerances. These also show that the implemented methods are convergent.
+
+A robust software of ODE solvers is constructed, that has documentation, version control and testing. The details of the software is documented and available at one of the links in Appendix~\ref{chap:link}. The version control tracks all changes made to the code. The unit testing of the software achieved 100\% code coverage. It tests the initialisation of problem and functionality of methods. These features will allow easier re-use of code and provide confidence on the correctness of code.
+
+The software is used to solve Fitzhugh-Nagumo model, a model of excitable system. Solutions from various numerical methods exhibits the fast-slow phase and the excitability property of the model. A convergence analysis shows that the numerical solutions are convergent. The adaptive method adapts the mesh points according to the changes in the variable. Moreover, the smaller the tolerance value, the higher the accuracy for adaptive methods.
 
 % Lesson learnt
+From this course, I learned about the numerical methods of solving ODEs, especially the theory behind the methods and their order of accuracy. It provides a basis to choose appropriate methods while solving ODE systems. This knowledge will also give me insight when problems arise in numerical solutions of ODE system. Moreover, while implementing the numerical methods, I realised the difference and difficulty in actual implementation, such as usage of fixed point iteration in solving implicit methods and computation of truncation error. Additionally, the reading on Fitzhugh-Nagumo model helps me in the background knowledge of my D.Phil. project. I understood the features and properties of Fitzhugh-Nagumo model and excitable systems in general. Finally, having experience in creating a software is really helpful in practicing the software engineering techniques for my D.Phil. project.
