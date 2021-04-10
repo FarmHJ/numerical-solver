@@ -29,12 +29,6 @@ Fitzhugh-Nagumo model is solved with the various numerical methods implemented i
     \label{fig:FHN_Euler_explicit}
 \end{figure}
 
-\begin{center}
-    \includegraphics[width=0.95\columnwidth]{FHN_Euler_explicit}
-    \caption{(\textit{A}) Phase plane of $v$ and $w$ by Euler's explicit method. (\textit{B}) Graph of $v$ and $w$ against time by Euler's explicit method.}
-    \label{fig:FHN_Euler_explicit}
-\end{center}
-
 From Figure \ref{fig:FHN_Euler_explicit} B, we can see that $v$, the excitation variable is excited in the early stage. While $v$ increases significantly, the change in $w$ is small. After $v$ reaches its peak and starts to reduce, $w$ increases slowly. This can be observed in both the phase plane (Figure \ref{fig:FHN_Euler_explicit} A) and the variable graph (Figure \ref{fig:FHN_Euler_explicit} B). When the variable $v$ starts to recover to its original value, $w$ is at its maximum. The scattering of points in the phase plane captures the feature of the model, where the change in $v$ is rapid while the change in $w$ is slow. When the change in $v$ is significantly larger than the change in $w$, the points are sparse. On the other hand, the points are packed when $w$ increases or decreases more than $v$. However, in the adaptive methods, such insights cannot be interpreted directly from the phase plane. Therefore, green triangles were plotted in Figure \ref{fig:FHN_adaptive} B to indicate the adapted mesh points. The mesh points are adapted towards large change in $v$ or $w$ over a short period of time.
 
 \begin{figure}
