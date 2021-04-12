@@ -185,7 +185,7 @@ In some types of problem, the solution to the problem exhibits a behaviour where
 
 Adaptive methods try to achieve the desired accuracy with low computational cost. The main idea of an adaptive method is to control the precision at each mesh point and from there assumes the precision of the solution is within the desired range. To achieve this, the error at each mesh point is estimated. If the error is larger than a threshold value, a smaller step size is chosen. These steps are repeated until the error is smaller than the given threshold value.
 
-The adaptive methods implemented in my package are based on the BS23 (Bogacki and Shampine) and RKF45 (Runge-Kutta-Fehlberg) method. A lower order method is used to estimate the solution, while a higher order method is used to estimate the error. 
+The adaptive methods implemented in my package are based on the BS23 (Bogacki and Shampine) and RKF45 (Runge-Kutta-Fehlberg) method, referenced from \cite{Forsythe1977}. A lower order method is used to estimate the solution, while a higher order method is used to estimate the error. 
 
 Absolute tolerance and relative tolerance are used in the implementation of the adaptive methods to control the error. Similarly, the implemented adaptive method is used to solve the test problem Eqs.~\eqref{eqn:example_model}-\eqref{eqn:example-end} and tested for convergence. Two comparisons were made, one based on absolute tolerance and the other on relative tolerance. As shown in Figure \ref{fig:ode45_absolute_sum_error_behaviour} and Figure \ref{fig:ode45_relative_sum_error_behaviour}, the error of the method is smaller for smaller tolerance, regardless of absolute tolerance or relative tolerance.
 
